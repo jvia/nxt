@@ -20,6 +20,13 @@ public class FindLine implements Behavior{
     LightSensor rightLight;
     DifferentialPilot pilot;
 
+    /**
+     * Constructor for this behaviour.
+     * @param colour The colour sensor (centre sensor)
+     * @param left The left light sensor
+     * @param right The right light sensor
+     * @param pilot A differential Pilot
+     */
     public FindLine(ColorSensor colour, LightSensor left, LightSensor right, DifferentialPilot pilot) {
         this.colour = colour;
         leftLight = left;
@@ -49,6 +56,9 @@ public class FindLine implements Behavior{
        
     }
 
+    /**
+     * Suppresses the behaviour, stopping both motors.
+     */
     public void suppress() {
         Motor.A.stop();
         Motor.B.stop();

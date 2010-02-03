@@ -18,14 +18,25 @@ public class FollowLine implements Behavior{
 
     ColorSensor colour;
 
+    /**
+     * Constructor for this behaviour.
+     * @param colour The colour sensor (central sensor)
+     */
     public FollowLine(ColorSensor colour) {
         this.colour = colour;
     }
 
+    /**
+     * Takes control when the raw red value of the colour sensor drops below 30,000.
+     * @return
+     */
     public boolean takeControl() {       
         return(colour.getRawRed() < 30000);
     }
 
+    /**
+     * Resets the speed of the motors to a base value (important), and then moves forwards.
+     */
     public void action() {
         Motor.A.setSpeed(500);
         Motor.B.setSpeed(500);
@@ -33,6 +44,9 @@ public class FollowLine implements Behavior{
         Motor.B.backward();
     }
 
+    /**
+     * Suppresses this behaviour, stopping both motors.
+     */
     public void suppress() {
         Motor.A.stop();
         Motor.B.stop();

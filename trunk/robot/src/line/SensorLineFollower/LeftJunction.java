@@ -18,6 +18,12 @@ public class LeftJunction implements Behavior {
     LightSensor left, right;
     DifferentialPilot p;
 
+    /**
+     * Constructor for this behaviour.
+     * @param colour The colour sensor (centre sensor)
+     * @param left The left light sensor
+     * @param p A differential pilot
+     */
     public LeftJunction(ColorSensor colour, LightSensor left, DifferentialPilot p) {
         this.colour = colour;
         this.left = left;
@@ -32,6 +38,9 @@ public class LeftJunction implements Behavior {
         return (left.getLightValue() < 40 && colour.getRawRed() < 30000);
     }
 
+    /**
+     * Turns the robot left at a left junction.
+     */
     public void action() {
 
         /*
@@ -58,6 +67,9 @@ public class LeftJunction implements Behavior {
         Motor.A.backward();
     }
 
+    /**
+     * Suppresses this behaviour, stopping both motors.
+     */
     public void suppress() {
         Motor.B.stop();
         Motor.A.stop();

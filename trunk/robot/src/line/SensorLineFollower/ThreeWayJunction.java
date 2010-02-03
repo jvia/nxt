@@ -20,6 +20,13 @@ public class ThreeWayJunction implements Behavior {
     ColorSensor color;
     DifferentialPilot pilot;
 
+    /**
+     * Constructor for this behaviour.
+     * @param left The left light sensor
+     * @param right The right light sensor
+     * @param color The colour sensor (centre sensor)
+     * @param p A differential pilot.
+     */
     public ThreeWayJunction(LightSensor left, LightSensor right, ColorSensor color, DifferentialPilot p) {
 
         rightLight = right;
@@ -42,6 +49,9 @@ public class ThreeWayJunction implements Behavior {
 
     }
 
+    /**
+     * Continues moving if a three way junction is encountered.
+     */
     public void action() {
 
         /*

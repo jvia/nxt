@@ -18,6 +18,12 @@ ColorSensor colour;
     LightSensor right;
     DifferentialPilot p;
 
+    /**
+     *  Constructor for this behaviour.
+     * @param colour The colour sensor (centre sensor)
+     * @param right The right light sensor
+     * @param p A differential pilot
+     */
     public RightJunction(ColorSensor colour, LightSensor right, DifferentialPilot p) {
         this.colour = colour;
         this.right = right;
@@ -32,6 +38,9 @@ ColorSensor colour;
         return(right.getLightValue() < 40 && colour.getRawRed() < 30000);
     }
 
+    /**
+     * Turns the robot to the right at a right junction.
+     */
     public void action() {
 
         /*
@@ -58,6 +67,9 @@ ColorSensor colour;
 
     }
 
+    /**
+     * Suppresses this action, stopping both motors.
+     */
     public void suppress() {
         Motor.B.stop();
         Motor.A.stop();

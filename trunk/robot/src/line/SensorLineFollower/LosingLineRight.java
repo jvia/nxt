@@ -18,15 +18,28 @@ public class LosingLineRight implements Behavior {
     LightSensor rightLight;
     DifferentialPilot pilot;
 
+    /**
+     * Constructor for this behaviour.
+     * @param p A differential pilot
+     * @param rightSensor The right light sensor
+     */
     public LosingLineRight(DifferentialPilot p, LightSensor rightSensor) {
         rightLight = rightSensor;
         pilot = p;
     }
 
+    /**
+     * Takes control when the light value of the right light sensor drops below 40.
+     * @return
+     */
     public boolean takeControl() {
         return (rightLight.getLightValue() < 40);
     }
 
+    /**
+     * Increases the speed of the left wheel in order to re-align the robot with the line.  The commented out
+     * code can also be used if sharper turns are required.
+     */
     public void action() {
 
         Motor.A.backward();
@@ -44,6 +57,9 @@ public class LosingLineRight implements Behavior {
 
     }
 
+    /**
+     * Suppresses this behaviour, stopping both motors.
+     */
     public void suppress() {
         Motor.A.stop();
         Motor.B.stop();
