@@ -2,16 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package distance;
+
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.Pilot;
+
 /**
  * 
  * @author Jeremiah Via
  */
-public class MoveForward extends Move
-{
+public class MoveForward extends Move {
 
     /**
      * 
@@ -29,7 +29,7 @@ public class MoveForward extends Move
      */
     @Override
     public boolean takeControl() {
-        return (getUltrasonicSensor().getDistance() + ERROR_THRESHOLD > getDistance()? true : false);
+        return ultrasonic.getDistance() + ERROR_THRESHOLD > distance ? true : false;
     }
 
     /**
@@ -37,7 +37,5 @@ public class MoveForward extends Move
      */
     @Override
     public void action() { pilot.forward(); }
-
-
 
 }

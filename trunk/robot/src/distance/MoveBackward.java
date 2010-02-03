@@ -8,8 +8,10 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.Pilot;
 
 /**
- * 
- * @author Jeremiah Via
+ *
+ * Exercise 03, Part 01
+ * 4 February 2010
+ * @author Jeremiah Via, Michal Staniazek
  */
 public class MoveBackward extends Move {
     /**
@@ -28,7 +30,7 @@ public class MoveBackward extends Move {
      */
     @Override
     public boolean takeControl() {
-        return (getUltrasonicSensor().getDistance() - ERROR_THRESHOLD < getDistance() ? true : false);
+        return (ultrasonic.getDistance() - ERROR_THRESHOLD < distance ? true : false);
 
     }
 

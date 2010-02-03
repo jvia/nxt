@@ -12,21 +12,28 @@ import lejos.robotics.subsumption.Behavior;
 import util.RobotConstants;
 
 /**
- * 
+ * Main class that initializes the behaviors and the robotic componenets needed
+ * in those behaviors. In essence, it runs the program.
+ *
+ * Exercise 03, Part 01
+ * 4 February 2010
  * @author Jeremiah Via, Michal Staniazek
  */
 public class SonarDistanceMaintainer {
-    
+
     /**
-     * 
-     * @param args
+     * Runs program
+     * @param args not used
      */
-    public static void main(String[] args) {
-        Pilot pilot = new TachoPilot(RobotConstants.WHEEL_DIAMETER, RobotConstants.TRACK_WIDTH, Motor.B, Motor.A, true);
+    public static void main(String [] args) {
+        Pilot pilot = new TachoPilot(RobotConstants.WHEEL_DIAMETER,
+                                     RobotConstants.TRACK_WIDTH, Motor.B,
+                                     Motor.A, true);
         UltrasonicSensor ultrasonic = new UltrasonicSensor(SensorPort.S1);
         int distance = 20;
         pilot.setMoveSpeed(720);
 
+        // simply a way to exit the program
         Button.ENTER.addButtonListener(new ButtonListener() {
             public void buttonPressed(Button button) { System.exit(0); }
             public void buttonReleased(Button button) {}

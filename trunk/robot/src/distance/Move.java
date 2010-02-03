@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package distance;
 
 import lejos.nxt.UltrasonicSensor;
@@ -9,32 +5,31 @@ import lejos.robotics.navigation.Pilot;
 import lejos.robotics.subsumption.Behavior;
 
 /**
+ * Abstract class that abstract away the common functionality of movements.
  *
- * @author Jeremiah Via, Michal Staniaszek
+ * Exercise 03, Part 01
+ * 4 February 2010
+ * @author Jeremiah Via, Michal Staniazek
  */
 public abstract class Move implements Behavior {
-    /**
-     *
-     */
-    public final static int ERROR_THRESHOLD = 3;
-    /**
-     *
-     */
-    protected Pilot pilot;
-    /**
-     *
-     */
-    protected UltrasonicSensor ultrasonic;
-    /**
-     *
-     */
-    protected int distance;
 
+    /** Compensates for noise in ultrasonic sensor readings. */
+    public final static int ERROR_THRESHOLD = 3;
+
+    /** Pilot used to move robot */
+    protected Pilot pilot;
+
+    /** Sensor used to measure distance */
+    protected UltrasonicSensor ultrasonic;
+
+    /** The distanc we want to maintain +/- the error threshold */
+    protected int distance;
+    
     /**
-     *
-     * @param distance
-     * @param pilot
-     * @param ultrasonic
+     * Constructor initializes Move behavior.
+     * @param distance distance to maintain
+     * @param pilot pilot used to manuever robot
+     * @param ultrasonic ultrasonic sensor to measure distance
      */
     public Move(int distance, Pilot pilot, UltrasonicSensor ultrasonic) {
         this.pilot = pilot;
@@ -43,53 +38,7 @@ public abstract class Move implements Behavior {
 
     }
 
-    /**
-     *
-     * @return
-     */
-    public int getDistance() {
-        return distance;
-    }
+    /** Basic behavior that simply stops the robot */
+    public void suppress() { pilot.stop(); }
 
-    /**
-     *
-     * @return
-     */
-    public UltrasonicSensor getUltrasonicSensor() {
-        return ultrasonic;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Pilot getTachoPilot() {
-        return pilot;
-    }
-
-    /**
-     *
-     * @param distance
-     */
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public abstract boolean takeControl();
-
-    /**
-     *
-     */
-    public abstract void action();
-
-    /**
-     *
-     */
-    public void suppress() {
-        pilot.stop();
-    }
 }
