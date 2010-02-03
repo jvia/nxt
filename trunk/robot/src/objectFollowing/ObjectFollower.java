@@ -16,9 +16,17 @@ import util.RobotConstants;
 
 /**
  * 
+ *
+ * Exercise 03, Part 03
+ * 04 February 2010
  * @author Jeremiah Via
  */
 public class ObjectFollower {
+    /**
+     *
+     * @param args
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws InterruptedException {
         Pilot pilot = new TachoPilot(RobotConstants.WHEEL_DIAMETER, RobotConstants.TRACK_WIDTH,
                                      RobotConstants.leftMotor, RobotConstants.rightMotor);
@@ -34,7 +42,6 @@ public class ObjectFollower {
             public void buttonReleased(Button button) {}
         });
 
-        Behavior find = new FindObject(cam, pilot);
         Behavior center = new CenterObject(cam, pilot);
         Behavior stayStill = new StayStill(cam, pilot);
         
