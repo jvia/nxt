@@ -5,7 +5,7 @@
  * line too many times.
  */
 
-package SensorLineFollower;
+package line.SensorLineFollower;
 
 import lejos.nxt.Motor;
 import lejos.nxt.addon.ColorSensor;

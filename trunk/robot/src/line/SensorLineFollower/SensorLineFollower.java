@@ -6,7 +6,7 @@
  * motors.  When the left light sensor is triggered, the speed of the left motor decreases,
  * and vice versa.
  */
-package SensorLineFollower;
+package line.SensorLineFollower;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;

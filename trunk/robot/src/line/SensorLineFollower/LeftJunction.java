@@ -1,8 +1,7 @@
 /*
- *Attempts to detect a right junction (paths forwards and right) and choose one.
+ *Attempts to detect a left junction (paths forwards and left) and choose one
  */
-
-package SensorLineFollower;
+package line.SensorLineFollower;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
@@ -13,23 +12,24 @@ import lejos.robotics.subsumption.Behavior;
 /*
  * Author Michal Staniaszek
  */
-public class RightJunction implements Behavior{
-ColorSensor colour;
-    LightSensor right;
+public class LeftJunction implements Behavior {
+
+    ColorSensor colour;
+    LightSensor left, right;
     DifferentialPilot p;
 
-    public RightJunction(ColorSensor colour, LightSensor right, DifferentialPilot p) {
+    public LeftJunction(ColorSensor colour, LightSensor left, DifferentialPilot p) {
         this.colour = colour;
-        this.right = right;
+        this.left = left;
         this.p = p;
     }
 
     /**
-     * Takes control if the right light sensor and colour sensor detect black values.
+     * Takes control if the left light sensor and colour sensor detect black values.
      * @return
      */
     public boolean takeControl() {
-        return(right.getLightValue() < 40 && colour.getRawRed() < 30000);
+        return (left.getLightValue() < 40 && colour.getRawRed() < 30000);
     }
 
     public void action() {
@@ -47,15 +47,15 @@ ColorSensor colour;
 //            Motor.B.backward();
 //            Motor.A.backward();
 //        } else {
-//            p.rotate(-90);
+//            p.rotate(90);
 //        }
 
-        /**
-         * Turns the robot right.
-         */
-        Motor.B.backward();
-        Motor.A.forward();
 
+        /**
+         * Turns the robot left.
+         */
+        Motor.B.forward();
+        Motor.A.backward();
     }
 
     public void suppress() {

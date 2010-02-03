@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package distance;
 
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.Pilot;
 
 /**
- * 
+ * Describes the behavior of doing nothing. Very zen.
  * 
  * Exercise 03, Part 01
  * 4 February 2010
@@ -43,5 +39,4 @@ public class SitStill extends Move {
     public void action() {
         pilot.stop();
     }
-
 }

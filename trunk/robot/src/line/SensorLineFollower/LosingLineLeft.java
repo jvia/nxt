@@ -3,7 +3,7 @@
  * When this value is detected, the right motor's speed decreases, causing
  * the robot to turn right.
  */
-package SensorLineFollower;
+package line.SensorLineFollower;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;

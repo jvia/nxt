@@ -2,7 +2,7 @@
  * Attempts to detect a three way junction (i.e. path forwards, left and right),
  * and turn a random direction.
  */
-package SensorLineFollower;
+package line.SensorLineFollower;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;

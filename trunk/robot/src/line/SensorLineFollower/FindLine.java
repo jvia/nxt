@@ -2,7 +2,7 @@
  * Attempts to find a line if none of the sensors detect black.
  */
 
-package SensorLineFollower;
+package line.SensorLineFollower;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
