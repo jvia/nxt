@@ -4,8 +4,8 @@
  */
 
 package line.lightSensor;
-import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
+import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 /**
  * 
@@ -21,8 +21,22 @@ public class LightTest
         {
             System.out.println("left: " + left.getLightValue() );
             System.out.println("right: " + right.getLightValue());
-            Thread.sleep(200);
-            LCD.clear();
+
+            if (left.getLightValue() < 45 && right.getLightValue() < 45){
+                Motor.A.stop();
+                Thread.sleep(1245);
+                
+            }
+            else if (left.getLightValue() < 45){
+               Motor.B.stop();
+            }
+            else if (right.getLightValue() < 45){
+               Motor.A.stop();
+            }
+            else{
+                Motor.A.backward();
+                Motor.B.backward();
+            }
         }
     }
 
