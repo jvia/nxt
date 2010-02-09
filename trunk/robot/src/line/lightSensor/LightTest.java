@@ -24,6 +24,7 @@ public class LightTest
 
             if (left.getLightValue() < 45 && right.getLightValue() < 45){
                 Motor.A.stop();
+                
                 Thread.sleep(1245);
                 
             }
