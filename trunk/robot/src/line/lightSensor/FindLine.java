@@ -1,7 +1,8 @@
 package line.lightSensor;
 
 import lejos.nxt.LightSensor;
-import lejos.robotics.navigation.TachoPilot;
+import lejos.nxt.Sound;
+import lejos.robotics.navigation.Pilot;
 import lejos.robotics.subsumption.Behavior;
 
 /**
@@ -13,37 +14,13 @@ public class FindLine implements Behavior {
     public static int BLACK = 40;
     private LightSensor leftSensor;
     private LightSensor rightSensor;
-    private TachoPilot pilot;
+    private Pilot pilot;
     
     public FindLine(LightSensor leftSensor, LightSensor rightSensor,
-                    TachoPilot pilot) {
+                    Pilot pilot) {
         this.leftSensor = leftSensor;
         this.rightSensor = rightSensor;
         this.pilot = pilot;
-    }
-
-    public LightSensor getLeftSensor() {
-        return leftSensor;
-    }
-
-    public TachoPilot getPilot() {
-        return pilot;
-    }
-
-    public LightSensor getRightSensor() {
-        return rightSensor;
-    }
-
-    public void setLeftSensor(LightSensor leftSensor) {
-        this.leftSensor = leftSensor;
-    }
-
-    public void setPilot(TachoPilot pilot) {
-        this.pilot = pilot;
-    }
-
-    public void setRightSensor(LightSensor rightSensor) {
-        this.rightSensor = rightSensor;
     }
 
     public boolean takeControl() {
@@ -53,6 +30,7 @@ public class FindLine implements Behavior {
 
     public void action() {
         // if leftSensor on black, stop left wheel
+        Sound.playTone(440, 2);
         int angle = 30;
         int turnRate;
 

@@ -1,6 +1,7 @@
 package line.lightSensor;
 
 import lejos.nxt.LightSensor;
+import lejos.robotics.navigation.Pilot;
 import lejos.robotics.navigation.TachoPilot;
 import lejos.robotics.subsumption.Behavior;
 
@@ -13,10 +14,10 @@ public class Forward implements Behavior {
     public static int BLACK = 40;
     private LightSensor leftSensor;
     private LightSensor rightSensor;
-    private TachoPilot pilot;
+    private Pilot pilot;
 
     public Forward(LightSensor leftSensor, LightSensor rightSensor,
-                   TachoPilot pilot) {
+                   Pilot pilot) {
         this.leftSensor = leftSensor;
         this.rightSensor = rightSensor;
         this.pilot = pilot;
@@ -30,7 +31,7 @@ public class Forward implements Behavior {
         this.leftSensor = leftSensor;
     }
 
-    public TachoPilot getPilot() {
+    public Pilot getPilot() {
         return pilot;
     }
 
