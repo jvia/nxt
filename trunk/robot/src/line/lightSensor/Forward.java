@@ -23,29 +23,6 @@ public class Forward implements Behavior {
         this.pilot = pilot;
     }
 
-    public LightSensor getLeftSensor() {
-        return leftSensor;
-    }
-
-    public void setLeftSensor(LightSensor leftSensor) {
-        this.leftSensor = leftSensor;
-    }
-
-    public Pilot getPilot() {
-        return pilot;
-    }
-
-    public void setPilot(TachoPilot pilot) {
-        this.pilot = pilot;
-    }
-
-    public LightSensor getRightSensor() {
-        return rightSensor;
-    }
-
-    public void setRightSensor(LightSensor rightSensor) {
-        this.rightSensor = rightSensor;
-    }
 
     public boolean takeControl() {
         return (leftSensor.getLightValue() > BLACK && rightSensor.getLightValue()
