@@ -15,33 +15,25 @@ import util.RobotConstants;
  */
 public class LineFollower {
 
-    private Pilot pilot;
-    private LightSensor leftSensor;
-    private LightSensor rightSensor;
-    private Arbitrator a;
-
-    public LineFollower(Pilot pilot, LightSensor leftSensor,
-                        LightSensor rightSensor) {
-        this.pilot = pilot;
-        this.leftSensor = leftSensor;
-        this.rightSensor = rightSensor;
-        Behavior findLine = new FindLine(leftSensor, rightSensor, pilot);
-        Behavior generatePoints = new GeneratePoints(leftSensor, rightSensor,
-                                                     pilot);
-        Behavior forwards = new Forward(leftSensor, rightSensor, pilot);
-        Behavior[] behaviors = {forwards, generatePoints, findLine};
-        a = new Arbitrator(behaviors);
-    }
-
-    public void run() {
-        a.start();
+    public static void lightValues(LightSensor left, LightSensor right){
+        System.out.println(left.getLightValue()+"\t"+right.getLightValue());
     }
 
     public static void main(String[] args) {
-        Pilot pilot = new TachoPilot(RobotConstants.WHEEL_DIAMETER, RobotConstants.TRACK_WIDTH, RobotConstants.leftMotor, RobotConstants.rightMotor);
+
+        Pilot pilot = new TachoPilot(RobotConstants.WHEEL_DIAMETER,
+                                     RobotConstants.TRACK_WIDTH,
+                                     RobotConstants.leftMotor,
+                                     RobotConstants.rightMotor,
+                                     true);
         LightSensor left = new LightSensor(SensorPort.S3);
         LightSensor right = new LightSensor(SensorPort.S4);
-        LineFollower lf = new LineFollower(pilot, left, right);
-        lf.run();
+
+
+        Behavior findLine = new FindLine(left, right, pilot);
+        Behavior forward = new Forward(left, right, pilot);
+        Behavior[] bs = {forward, findLine};
+        Arbitrator arr = new Arbitrator(bs);
+        arr.start();
     }
 }

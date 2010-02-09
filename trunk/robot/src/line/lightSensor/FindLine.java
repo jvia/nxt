@@ -29,7 +29,9 @@ public class FindLine implements Behavior {
     }
 
     public void action() {
+        LineFollower.lightValues(leftSensor, rightSensor);
         // if leftSensor on black, stop left wheel
+        
         Sound.playTone(440, 2);
         int angle = 30;
         int turnRate;

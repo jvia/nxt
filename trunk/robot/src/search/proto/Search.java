@@ -5,8 +5,7 @@
 package search.proto;
 
 import java.awt.Point;
-import lejos.nxt.Button;
-
+import lejos.nxt.comm.RConsole;
 
 /**
  * 
@@ -117,12 +116,20 @@ public class Search {
         return points;
     }
 
-
-    
-
     public static void main(String[] args) throws InterruptedException {
-        printGrid(generateGrid(3, 7));
-        Button.waitForPress();
+        Point[] points = makeGrid(4, 4);
+        RConsole.openBluetooth(25000);
+
+        int lastY = 0;
+        for (Point p : points) {
+            if (p.y != lastY) {
+                RConsole.println("");
+                lastY = p.y;
+            }
+            RConsole.print("["+p.x+","+p.y+"]");
+        }
+        RConsole.println("");
+        RConsole.close();
     }
 }
     
