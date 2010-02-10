@@ -32,8 +32,10 @@ public class LineFollower {
 
         Behavior findLine = new JunctionReached(left, right, pilot);
         Behavior forward = new Forward(left, right, pilot);
-        Behavior 
-        Behavior[] bs = {forward, findLine};
+        Behavior centreLine = new AdjustToCentreLine(left, right);
+        Behavior[] bs = {forward
+                //, findLine
+                , centreLine};
         Arbitrator arr = new Arbitrator(bs);
         arr.start();
     }

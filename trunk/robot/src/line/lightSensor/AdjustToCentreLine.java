@@ -16,6 +16,13 @@ public class AdjustToCentreLine implements Behavior {
     LightSensor leftSensor;
     LightSensor rightSensor;
 
+    public AdjustToCentreLine(LightSensor leftSensor, LightSensor rightSensor) {
+        this.leftSensor = leftSensor;
+        this.rightSensor = rightSensor;
+    }
+
+
+
     public boolean takeControl() {
         return (leftSensor.getLightValue() < JunctionReached.BLACK ^ rightSensor.getLightValue() < JunctionReached.BLACK);
     }
