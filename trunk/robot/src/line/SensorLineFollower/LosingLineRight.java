@@ -46,12 +46,11 @@ public class LosingLineRight implements Behavior {
         Motor.B.backward();
 
         while (rightLight.getLightValue() < 40) {
-            //Motor.B.setSpeed(Motor.B.getSpeed() + 50);
-            //Motor.A.setSpeed(Motor.A.getSpeed() - 15);
             Motor.A.setSpeed(Motor.A.getSpeed() - 60);
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
+                System.out.println("Exception occurred");
             }
         }
 
