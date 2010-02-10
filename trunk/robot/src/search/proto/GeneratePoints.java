@@ -5,6 +5,7 @@
 
 package search.proto;
 import lejos.nxt.LightSensor;
+import lejos.nxt.Sound;
 import lejos.robotics.navigation.Pilot;
 import lejos.robotics.subsumption.Behavior;
 /**
@@ -25,15 +26,15 @@ public class GeneratePoints implements Behavior
     
 
     public boolean takeControl() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return left.getLightValue() < 45 && right.getLightValue() < 45;
     }
 
     public void action() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        pilot.steer(90, 90);
+//        pilot.rotate(90);while(pilot.isMoving())Thread.yield();
+        Sound.playTone(440, 200);
     }
 
-    public void suppress() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    public void suppress() {}
 
 }
