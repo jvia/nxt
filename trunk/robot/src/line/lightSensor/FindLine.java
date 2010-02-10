@@ -11,7 +11,7 @@ import lejos.robotics.subsumption.Behavior;
  */
 public class FindLine implements Behavior {
 
-    public static int BLACK = 40;
+    public static int BLACK = 45;
     private LightSensor leftSensor;
     private LightSensor rightSensor;
     private Pilot pilot;
@@ -25,22 +25,22 @@ public class FindLine implements Behavior {
 
     public boolean takeControl() {
         return leftSensor.getLightValue() <= BLACK
-               || rightSensor.getLightValue() <= BLACK;
+               ^ rightSensor.getLightValue() <= BLACK;
     }
 
     public void action() {
         /// testing
-        LineFollower.lightValues(leftSensor, rightSensor);
+       // LineFollower.lightValues(leftSensor, rightSensor);
         // if leftSensor on black, stop left wheel
         
         Sound.playTone(440, 2);
-        int angle = 30;
+        int angle = 360;
         int turnRate;
 
         if (leftSensor.getLightValue() <= BLACK)
-            turnRate = 30;
+            turnRate = 90;
         else
-            turnRate = -30;
+            turnRate = -90;
 
        
 
