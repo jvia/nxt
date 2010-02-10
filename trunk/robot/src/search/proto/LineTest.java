@@ -26,9 +26,8 @@ public class LineTest
         
         Behavior findLine = new FindLine(left, right, pilot);
         Behavior forward = new Forward(left, right, pilot);
-        Behavior shitStorm = new GeneratePoints(left ,right, pilot);
 
-        Behavior [] bees = {shitStorm, findLine, forward};
+        Behavior [] bees = {findLine, forward};
         Arbitrator a = new Arbitrator(bees);
         a.start();
 
