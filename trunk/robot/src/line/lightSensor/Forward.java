@@ -17,16 +17,16 @@ public class Forward implements Behavior {
     private Pilot pilot;
 
     public Forward(LightSensor leftSensor, LightSensor rightSensor,
-                   Pilot pilot) {
+            Pilot pilot) {
         this.leftSensor = leftSensor;
         this.rightSensor = rightSensor;
         this.pilot = pilot;
     }
 
-
     public boolean takeControl() {
-        return (leftSensor.getLightValue() > BLACK && rightSensor.getLightValue()
-                                                      > BLACK);
+        return (leftSensor.getLightValue() > BLACK 
+                && rightSensor.getLightValue() > BLACK
+                && !LineFollower.getTurnFlag());
     }
 
     public void action() {

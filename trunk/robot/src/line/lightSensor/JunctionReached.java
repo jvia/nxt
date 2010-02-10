@@ -23,7 +23,8 @@ public class JunctionReached implements Behavior {
 
     public boolean takeControl() {
         return (leftSensor.getLightValue() <= BLACK
-               && rightSensor.getLightValue() <= BLACK);
+               && rightSensor.getLightValue() <= BLACK
+               && LineFollower.getTurnFlag());
     }
 
     public void action() {

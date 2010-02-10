@@ -14,6 +14,8 @@ import util.RobotConstants;
  */
 public class LineFollower {
 
+    public static boolean turnFlag = false;
+
     public static void lightValues(LightSensor left, LightSensor right){
         System.out.println(left.getLightValue()+"\t"+right.getLightValue());
     }
@@ -30,8 +32,21 @@ public class LineFollower {
 
         Behavior findLine = new JunctionReached(left, right, pilot);
         Behavior forward = new Forward(left, right, pilot);
+        Behavior 
         Behavior[] bs = {forward, findLine};
         Arbitrator arr = new Arbitrator(bs);
         arr.start();
     }
+
+    public static boolean getTurnFlag() {
+        return turnFlag;
+    }
+
+    public static void setTurnFlag(boolean newFlag) {
+        turnFlag = newFlag;
+    }
+
+
+
+
 }
