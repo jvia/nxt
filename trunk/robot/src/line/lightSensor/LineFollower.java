@@ -16,8 +16,8 @@ public class LineFollower {
 
     public static boolean turnFlag = false;
 
-    public static void lightValues(LightSensor left, LightSensor right){
-        System.out.println(left.getLightValue()+"\t"+right.getLightValue());
+    public static void lightValues(LightSensor left, LightSensor right) {
+        System.out.println(left.getLightValue() + "\t" + right.getLightValue());
     }
 
     public static void main(String[] args) {
@@ -30,12 +30,9 @@ public class LineFollower {
         LightSensor left = new LightSensor(SensorPort.S3);
         LightSensor right = new LightSensor(SensorPort.S4);
 
-        Behavior findLine = new JunctionReached(left, right, pilot);
+        Behavior findLine = new FindLine(left, right, pilot);
         Behavior forward = new Forward(left, right, pilot);
-        Behavior centreLine = new AdjustToCentreLine(left, right);
-        Behavior[] bs = {forward
-                //, findLine
-                , centreLine};
+        Behavior[] bs = {forward, findLine};
         Arbitrator arr = new Arbitrator(bs);
         arr.start();
     }
@@ -47,8 +44,4 @@ public class LineFollower {
     public static void setTurnFlag(boolean newFlag) {
         turnFlag = newFlag;
     }
-
-
-
-
 }
