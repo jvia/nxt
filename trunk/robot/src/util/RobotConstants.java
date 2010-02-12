@@ -22,6 +22,8 @@ public class RobotConstants
      */
     public static final float TRACK_WIDTH = 173f;
 
+    public static final float SINGLE_ROTATION = (float) Math.PI * WHEEL_DIAMETER;
+
     public static final Motor leftMotor = Motor.B;
     public static final Motor rightMotor = Motor.A;
 
