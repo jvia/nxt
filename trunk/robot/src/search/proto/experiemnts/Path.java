@@ -18,6 +18,11 @@ public class Path
         this.blocked = blocked;
     }
 
+    
+    public Path() {
+        blocked = false;
+    }
+
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }

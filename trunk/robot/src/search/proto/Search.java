@@ -4,8 +4,9 @@
  */
 package search.proto;
 
-import java.awt.Point;
+import lejos.geom.Point;
 import lejos.nxt.comm.RConsole;
+import util.Queue;
 
 /**
  * 
@@ -13,12 +14,25 @@ import lejos.nxt.comm.RConsole;
  */
 public class Search {
 
-    Point[] grid = {new Point(0, 0), new Point(1, 0), new Point(2, 0),
-                    new Point(0, 1), new Point(1, 1), new Point(2, 1),
-                    new Point(0, 2), new Point(1, 2), new Point(2, 2)};
+    Point[] grid = { new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(3, 0), new Point(4, 0),
+                         new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1), new Point(4, 1),
+                         new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(3, 2), new Point(4, 2),
+                         new Point(0, 3), new Point(1, 3), new Point(2, 3), new Point(3, 3), new Point(4, 3),
+                         new Point(0, 4), new Point(1, 4), new Point(2, 4), new Point(3, 4), new Point(4, 4),
+                        };
+
     Queue agendaList;
-    Point start = grid[0]; // (0,0)
-    Point goal = grid[7]; // (0,2)
+    Point start = grid[0];
+    Point goal = grid[11];
+    
+    public void setStart(int index){
+        start = grid[index];
+    }
+
+    public void setGoal(int index){
+        goal = grid[index];
+    }
+
 
     /**
      * Determines if the (X,Y) values of both points are equal.
@@ -33,33 +47,35 @@ public class Search {
     public void generateChildren(Point p) {
         // add Point(x-1, y), if possible
         if (p.getX() - 1 >= 0) {
-            agendaList.push(new Point(p.x - 1, p.y));
+
+            agendaList.push(new Point((int)p.getX() - 1, (int)p.getY()));
         }
 
         // add Point(x+1, y), if possible
         if (p.getX() + 1 <= grid[grid.length - 1].getX()) {
-            agendaList.push(new Point(p.x + 1, p.y));
+            agendaList.push(new Point((int)p.getX() + 1, (int)p.getY()));
         }
 
         // add Point(x, y-1), if possible
         if (p.getY() - 1 >= 0) {
-            agendaList.push(new Point(p.x, p.y - 1));
+            agendaList.push(new Point((int)p.getX(), (int)p.getY() - 1));
         }
 
         // add Point(x, y+1), if possible
         if (p.getY() + 1 <= grid[grid.length - 1].getY()) {
-            agendaList.push(new Point(p.x, p.y + 1));
+            agendaList.push(new Point((int)p.getX(), (int)p.getY() + 1));
         }
     }
 
     public void bfs(Point currentState, Point goalState) {
         if (areEqual(currentState, goalState)) {
+            RConsole.println("Success!");
             return;
         }
         else {
             generateChildren(currentState);
             Point p = (Point) agendaList.pop();
-            System.out.println(p);
+            RConsole.println(p.toString());
             bfs(p, goalState);
         }
 
@@ -94,11 +110,11 @@ public class Search {
 
         int lastY = 0;
         for (Point p : points) {
-            if (p.y != lastY) {
+            if (p.getY() != lastY) {
                 System.out.println("");
-                lastY = p.y;
+                lastY = (int)p.getY();
             }
-            System.out.print("[" + p.x + "," + p.y + "]");
+            System.out.print("[" + p.getX() + "," + p.getY() + "]");
         }
         System.out.println("");
     }
@@ -117,17 +133,14 @@ public class Search {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Point[] points = makeGrid(4, 4);
+        Search search = new Search();
+//        search.setStart(0); //(0,0)
+//        search.setGoal(11); // (1,2)
+        
         RConsole.openBluetooth(25000);
 
-        int lastY = 0;
-        for (Point p : points) {
-            if (p.y != lastY) {
-                RConsole.println("");
-                lastY = p.y;
-            }
-            RConsole.print("["+p.x+","+p.y+"]");
-        }
+        search.bfs(search.start, search.goal);
+
         RConsole.println("");
         RConsole.close();
     }
