@@ -31,11 +31,16 @@ public class Traveler {
     LightSensor left = new LightSensor(SensorPort.S3);
     LightSensor right = new LightSensor(SensorPort.S4);
     Facing currentFacing = Facing.EAST;
-    GridPoint currentPoint = new GridPoint(0, 0, false);// change this!
+    GridPoint currentPoint = new GridPoint(0,                   // X-coor
+                                           0,                   // Y-coor
+                                           false,               // Visited?
+                                           new Path(false),     // east path
+                                           new Path(false),     // west path
+                                           new Path(false),     // north path
+                                           new Path(false));    // south path
 
     public void travelUntilJunction() {
-        while (!(left.getLightValue() <= MAX_BLACK_VALUE
-                 && right.getLightValue() <= MAX_BLACK_VALUE)) {
+        while (!atJunction()) {
             if (left.getLightValue() <= MAX_BLACK_VALUE
                 && right.getLightValue() > MAX_BLACK_VALUE) {
                 pilot.steer(45, 90, true);
@@ -51,6 +56,11 @@ public class Traveler {
         }
 
         pilot.travel(0.75f * RobotConstants.SINGLE_ROTATION);
+    }
+
+    public boolean atJunction(){
+        return left.getLightValue() <= MAX_BLACK_VALUE
+                 && right.getLightValue() <= MAX_BLACK_VALUE;
     }
 
     public void travelEast() {
@@ -72,9 +82,12 @@ public class Traveler {
         currentFacing = Facing.EAST;
 
         pilot.forward();
-        try { Thread.sleep(500);}
-        catch (Exception e) {}
-        
+        try {
+            Thread.sleep(500);
+        }
+        catch (Exception e) {
+        }
+
         travelUntilJunction();
 
     }
@@ -94,9 +107,12 @@ public class Traveler {
         currentFacing = Facing.WEST;
 
         pilot.forward();
-        try { Thread.sleep(500);}
-        catch (Exception e) {}
-        
+        try {
+            Thread.sleep(500);
+        }
+        catch (Exception e) {
+        }
+
         travelUntilJunction();
 
     }
@@ -117,8 +133,11 @@ public class Traveler {
         currentFacing = Facing.NORTH;
 
         pilot.forward();
-        try { Thread.sleep(500);}
-        catch (Exception e) {}
+        try {
+            Thread.sleep(500);
+        }
+        catch (Exception e) {
+        }
 
         travelUntilJunction();
 
@@ -140,11 +159,14 @@ public class Traveler {
         currentFacing = Facing.SOUTH;
 
         pilot.forward();
-        try { Thread.sleep(500);}
-        catch (Exception e) {}
+        try {
+            Thread.sleep(500);
+        }
+        catch (Exception e) {
+        }
 
         travelUntilJunction();
-        
+
 
     }
 
