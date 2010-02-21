@@ -15,6 +15,10 @@ public class GridPoint implements SearchNode {
     Point point;
     boolean north, south, east, west;
 
+    public GridPoint(int x, int y,boolean north, boolean south, boolean east,
+                     boolean west){
+        this(new Point(x,y), north, south, east, west) ;
+    }
 
     public GridPoint(Point point, boolean north, boolean south, boolean east,
                      boolean west) {
@@ -25,12 +29,20 @@ public class GridPoint implements SearchNode {
         this.west = west;
     }
 
-    public float getX(){
-        return point.x;
+    public void setX(float x ){
+        point.x = x;
     }
 
-    public float getY(){
-        return point.y;
+    public void setY(float y){
+        point.y = y;
+    }
+
+    public int getX(){
+        return (int) point.x;
+    }
+
+    public int getY(){
+        return (int) point.y;
     }
 
     public boolean isGoal() {
@@ -45,5 +57,9 @@ public class GridPoint implements SearchNode {
         return this.point.x == point.getX() && this.point.y == point.getY();
     }
 
+    @Override
+    public String toString(){
+        return "("+getX()+", "+getY()+")";
+    }
 
 }
