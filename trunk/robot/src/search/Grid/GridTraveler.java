@@ -16,7 +16,7 @@ import util.Queue;
  */
 public class GridTraveler {
 
-    boolean DEBUG = true;
+    boolean DEBUG = false;
 
     public enum Facing {
 
@@ -28,13 +28,13 @@ public class GridTraveler {
     final TachoPilot pilot;
     final LightSensor left;
     final LightSensor right;
-    Point currPoint;
+    GridPoint currPoint;
     int height, width;
     private Facing currentFacing;
     Queue<String> moves;
 
     public GridTraveler(TachoPilot pilot, LightSensor left, LightSensor right,
-                        Point currPoint, int height, int width,
+                        GridPoint currPoint, int height, int width,
                         Facing currentFacing) {
         this.pilot = pilot;
         this.left = left;
@@ -46,34 +46,6 @@ public class GridTraveler {
         moves = new Queue<String>();
     }
 
-    /**
-    //NSEW
-    GridPoint[][] grid;
-    GridPoint currentPoint;// = grid[0][0];
-    GridPoint goalPoint;// = grid[1][2];
-    ArrayList<String> moves = new ArrayList<String>();
-    private static final boolean north = true, south = true, east = true, west =
-    true,
-    noNorth = false, noSouth = false, noEast = false, noWest = false;
-    ColorSensor s = new ColorSensor(SensorPort.S2);
-
-    public GridTraveler(TachoPilot pilot, LightSensor left, LightSensor right,
-    Facing currentFacing, GridPoint currentPoint,
-    GridPoint goalPoint, GridPoint[][] grid) {
-    this.pilot = pilot;
-    this.left = left;
-    this.right = right;
-    this.currentFacing = currentFacing;
-    this.currentPoint = currentPoint;
-    this.goalPoint = goalPoint;
-    this.grid = grid;
-    }
-
-    public void setCurrentPoint(final GridPoint currentPoint) {
-    this.currentPoint = currentPoint;
-    }
-
-     */
     void travelUntilJunction() {
         while (!atJunction()) {
             if (alignedWithLine()) {
@@ -183,24 +155,28 @@ public class GridTraveler {
     }
 
     void north() {
+        currPoint.y--;
         moveOverJunction();
         faceDirection(Facing.NORTH);
         travelUntilJunction();
     }
 
     void south() {
+        currPoint.y++;
         moveOverJunction();
         faceDirection(Facing.SOUTH);
         travelUntilJunction();
     }
 
     void east() {
+        currPoint.x++;
         moveOverJunction();
         faceDirection(Facing.EAST);
         travelUntilJunction();
     }
 
     void west() {
+        currPoint.x--;
         moveOverJunction();
         faceDirection(Facing.WEST);
         travelUntilJunction();
@@ -210,22 +186,38 @@ public class GridTraveler {
         System.out.print("(" + (int) point.x + ", " + (int) point.y + ")");
     }
 
+    public ArrayList<String> generateMoves(ArrayList<GridPoint> list){
+        ArrayList<String>  route = new ArrayList<String>();
+        GridPoint point1 = list.remove(0);
+        while ( list.size() != 0){
+            GridPoint point2 = list.remove(0);
+            if (point1.x < point2.x)
+                route.add("E");
+            if (point1.x > point2.x)
+                route.add("W");
+            if (point1.y < point2.y)
+                route.add("S");
+            if (point1.y > point2.y)
+                route.add("N");
+
+            point1 = point2;
+        }
+
+        return route;
+    }
+
     public void goTo(Point point) {
         while (!currPoint.equals(point)) {
             if (currPoint.x < point.x) {
-                currPoint.x++;
                 moves.add("E");
             }
             else if (currPoint.x > point.x) {
-                currPoint.x--;
                 moves.add("W");
             }
             else if (currPoint.y < point.y) {
-                currPoint.y++;
                 moves.add("S");
             }
             else if (currPoint.y > point.y) {
-                currPoint.y--;
                 moves.add("N");
             }
         }
@@ -237,7 +229,7 @@ public class GridTraveler {
     }
 
 
-    void executeMoves(ArrayList<String> list) {
+    public void executeMoves(ArrayList<String> list) {
         while (list.size() != 0) {
             String move = list.remove(0);
             if (!DEBUG) {
