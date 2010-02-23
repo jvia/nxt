@@ -242,6 +242,7 @@ public class GridTraveler {
                 else if (move.equals("S"))
                     south();
             }
+            pilot.stop();
         }
     }
 }

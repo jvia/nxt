@@ -18,21 +18,20 @@ public class SearchTravelerTest {
         SearchTraveler st = new SearchTraveler();
 
         GridPoint start = new GridPoint(0, 0);
-        GridPoint goal = new GridPoint(2, 3);
+        GridPoint goal1 = new GridPoint(2, 3);
+        GridPoint goal2 = new GridPoint(3,3);
+        GridPoint goal3 = new GridPoint(0,0);
 
         Button.waitForPress();
 
 
-//        st.bfs(start, goal);
-//        Button.waitForPress();
-//        System.out.println("\n");
+        st.bfs(start, goal1);
+        System.out.println("\n");
 
-//        st.dfs(start, goal);
-//        Button.waitForPress();
-//        System.out.println("\n");
+        st.dfs(goal1, goal2);
+        System.out.println("\n");
 
-        st.aStars(start, goal);
-        Button.waitForPress();
+        st.aStars(goal2, start);
         System.out.println("\n");
 
 
