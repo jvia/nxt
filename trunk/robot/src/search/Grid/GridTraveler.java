@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package search.Grid;
 
 import java.util.ArrayList;
@@ -12,7 +8,9 @@ import util.Queue;
 
 /**
  * 
- * @author Jeremiah Via
+ * Exercise 04
+ * 24 February 2010
+ * J. Via, M. Staniaszek
  */
 public class GridTraveler {
 
@@ -206,7 +204,7 @@ public class GridTraveler {
         return route;
     }
 
-    public void goTo(Point point) {
+    public void goTo(GridPoint point) {
         while (!currPoint.equals(point)) {
             if (currPoint.x < point.x) {
                 moves.add("E");

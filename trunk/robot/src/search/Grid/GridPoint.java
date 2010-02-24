@@ -1,41 +1,70 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package search.Grid;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import lejos.nxt.Button;
 
 /**
- * 
- * @author Jeremiah Via
+ * A class to define points in a grid. They can generate new states
+ * and are meant to be used in searching.
+ *
+ * Exercise 04
+ * 24 February 2010
+ * J. Via, M. Staniaszek
  */
 public class GridPoint extends Point implements Comparable<GridPoint> {
 
-    GridPoint previous;
-    int cost, expectedCost;
+    protected GridPoint previous;
+    protected int cost, expectedCost;
 
-    public GridPoint(int x, int y, GridPoint previous, int cost,
-                     int expectedCost) {
+    /**
+     * Constructs a GridPoint object.
+     * @param x x-coordinate
+     * @param y y-coorindate
+     * @param previous the GridPoint that leads to this point
+     * @param cost cost to get to this node (used in heuristic search)
+     * @param expectedCost expected cost to solution (used in heuristic search)
+     */
+    public GridPoint(int x, int y, GridPoint previous, int cost, int expectedCost) {
         super(x, y);
         this.previous = previous;
         this.cost = cost;
         this.expectedCost = expectedCost;
     }
 
+    /**
+     * Simplified constructor used when heuristics aren't needed.
+     * @param x x-coordinate
+     * @param y y-coorindate
+     * @param previous the GridPoint that leads to this point
+     */
     public GridPoint(int x, int y, GridPoint previous) {
         this(x, y, previous, 0, 0);
     }
 
+    /**
+     * Simplified constructor when only a Point is needed.
+     * @param x x-coordinate
+     * @param y y-coorindate
+     */
     public GridPoint(int x, int y) {
         this(x, y, null, 0, 0);
     }
 
-    public ArrayList<GridPoint> nextPoints(final ArrayList<GridPoint> visited,
-                                           int height, int width) {
+    /**
+     * Generates all the posible legal successor states of the current point
+     * and adds them to a list.
+     * 
+     * @param visited a list of visited points
+     * @param height height of the grid
+     * @param width width of the grid
+     * @return a list of successor points
+     */
+    public ArrayList<GridPoint> nextPoints(final ArrayList<GridPoint> visited, int height, int width) {
+
+        // temporary holder
         ArrayList<GridPoint> children = new ArrayList<GridPoint>();
+
+        // four possible successors, adds them if they are valid
         if (x < width)
             children.add(new GridPoint(x + 1, y, this));
         if (x > 0)
@@ -45,23 +74,35 @@ public class GridPoint extends Point implements Comparable<GridPoint> {
         if (y > 0)
             children.add(new GridPoint(x, y - 1, this));
 
+        // Remove nodes that we've visited before.
+        // Can't use removeAll(Collection c) because lejos hates us
         for (int i = 0; i < children.size(); i++) {
             if (visited.contains(children.get(i))) {
                 children.remove(i);
                 i = 0;
             }
         }
+        
         return children;
     }
 
-    public ArrayList<GridPoint> nextPointsHeuristic(final GridPoint goal,
-                                                    final ArrayList<GridPoint> visited,
-                                                    int height, int width,
-                                                    int cost) {
+    /**
+     * Similar to nextPoints in that it generates the successors to the curent
+     * point but it takes into account a cost + expected cost.
+     * 
+     * @param goal goal point used to calculate how far the point is
+     *             from the goal
+     * @param visited a list of previously visited points
+     * @param height height of the grid
+     * @param width width of the crid
+     * @param cost current cost to reach present location
+     * @return a list of points with heuristic values taken into account
+     */
+    public ArrayList<GridPoint> nextPointsHeuristic(final GridPoint goal, final ArrayList<GridPoint> visited,
+                                                    int height, int width,int cost) {
         ArrayList<GridPoint> children = new ArrayList<GridPoint>();
 
         if (x < width) {
-
             GridPoint pt = new GridPoint(x + 1, y, this);
             pt.cost = cost;
             pt.expectedCost = expectedCost(goal);
@@ -98,56 +139,56 @@ public class GridPoint extends Point implements Comparable<GridPoint> {
         return children;
     }
 
+    /**
+     * Calculates the expected cost to reach a given point from the current point.
+     * It does in it in the form of:
+     *          f(x) = g(x) + h(x)
+     * where
+     *          g(x) = accumulated cost
+     *          h(x) = estimated cost to goal
+     *
+     * @param point point to calculate cost to
+     * @return expected cost to travel to the point
+     */
     public int expectedCost(GridPoint point) {
         expectedCost = cost + (int) Math.sqrt(Math.pow(this.x - point.x, 2)
                                               + Math.pow(this.x - point.y, 2));
         return expectedCost;
     }
 
+    /**
+     * Determines if two GridPoints are equal to one another. Equality is
+     * simply determine by having the same (X,Y) values because search can
+     * reach the same point in different ways resulting in different parents,
+     * costs, etc. 
+     *
+     * @param point point whose equality is in question
+     * @return true if they are equal, false otherwise
+     */
     public boolean equals(GridPoint point) {
         return this.x == point.x && this.y == point.y;
     }
 
+    /**
+     * Returns a String representation of the object. Useful for debugging.
+     * @return String of object
+     */
     @Override
-    public String toString() {
-        return "(" + x + ", " + y + ")";
-    }
+    public String toString() { return "(" + x + ", " + y + ")"; }
 
-    public static void main(String[] args) {
-        GridPoint p = new GridPoint(0, 0, null);
-        GridPoint q = new GridPoint(1, 0, p);
-        GridPoint r = new GridPoint(0, 1, p);
-        GridPoint w = new GridPoint(2, 0, r);
-
-        ArrayList<GridPoint> list = new ArrayList<GridPoint>();
-        list.add(p);
-        list.add(q);
-        list.add(r);
-        list.add(w);
-
-        for (GridPoint l : list)
-            System.out.print(l);
-        System.out.println();
-
-        System.out.print(list.contains(p));
-        System.out.print(list.contains(r));
-        System.out.print(list.contains(w));
-
-        list.remove(p);
-        list.remove(q);
-
-        for (GridPoint l : list)
-            System.out.print(l);
-        System.out.println();
-
-        System.out.print(list.contains(p));
-        System.out.print(list.contains(r));
-        System.out.print(list.contains(w));
-
-        Button.waitForPress();
-    }
-
+    /**
+     * Compares two GridPoints and returns an integer relating where they are
+     * in relation to each other.
+     *
+     * N.B. it doesn't specify how far away they should be from ecah other
+     * 
+     * @param o GridPoint to compareTo
+     * @return              { this < o : negative value }
+     *            (this, o) { this = o : 0              }
+     *                      { this > o : positive value }
+     */
     public int compareTo(GridPoint o) {
+       // return (o.cost+o.expectedCost) - (this.cost+this.expectedCost);// test this
         Integer hOfO1 = cost + expectedCost;
         Integer hOfO2 = o.cost + o.expectedCost;
 

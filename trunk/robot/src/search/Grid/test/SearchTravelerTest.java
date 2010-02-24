@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package search.Grid.test;
 
 import lejos.nxt.Button;
@@ -9,8 +5,12 @@ import search.Grid.GridPoint;
 import search.Grid.SearchTraveler;
 
 /**
- * 
- * @author Jeremiah Via
+ * Class for testing out path generation using GridSearch and then traveling
+ * there using the GridTraveler.
+ *
+ * Exercise 04
+ * 24 February 2010
+ * J. Via, M. Staniaszek
  */
 public class SearchTravelerTest {
 
@@ -20,10 +20,8 @@ public class SearchTravelerTest {
         GridPoint start = new GridPoint(0, 0);
         GridPoint goal1 = new GridPoint(2, 3);
         GridPoint goal2 = new GridPoint(3,3);
-        GridPoint goal3 = new GridPoint(0,0);
 
         Button.waitForPress();
-
 
         st.bfs(start, goal1);
         System.out.println("\n");
@@ -33,7 +31,5 @@ public class SearchTravelerTest {
 
         st.aStars(goal2, start);
         System.out.println("\n");
-
-
     }
 }

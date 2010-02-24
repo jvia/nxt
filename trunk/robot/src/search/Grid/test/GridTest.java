@@ -10,7 +10,9 @@ import search.Grid.GridPoint;
 
 /**
  * 
- * @author Jeremiah Via
+ * Exercise 04
+ * 24 February 2010
+ * J. Via, M. Staniaszek
  */
 public class GridTest {
 

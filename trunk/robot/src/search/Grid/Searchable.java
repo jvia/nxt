@@ -4,12 +4,19 @@
  */
 
 package search.Grid;
-
+import java.util.ArrayList;
 /**
- * 
- * @author Jeremiah Via
+ *
+ * @author Jeremiah
  */
-public interface Searchable
-{
-    
+public interface Searchable<T> extends Comparable<T> {
+
+    int compareTo(T t);
+
+
+    int expectedCost(T point);
+
+    ArrayList<GridPoint> nextPoints(final ArrayList<GridPoint> visited,
+                                    int height, int width);
+
 }

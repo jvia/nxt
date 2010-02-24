@@ -1,3 +1,9 @@
+package search;
+
+///*
+// * To change this template, choose Tools | Templates
+// * and open the template in the editor.
+// */
 //package search.Grid;
 //
 //import lejos.geom.Point;
@@ -7,31 +13,32 @@
 //import lejos.nxt.addon.ColorSensor;
 //import lejos.robotics.navigation.TachoPilot;
 //import search.Grid.GridTraveler.Facing;
+//import util.Queue;
 //import util.RobotConstants;
-//import util.Stack;
 //
 ///**
 // *
 // * @author Jeremiah Via
 // */
-//public class DFSearch {
+//public class BFSearch {
+//
 //    GridTraveler traveler;
 //    ColorSensor colorSensor;
-//    Stack<Point> agendaList;
-//    Point start, goal;
-//    int goalColor = 3;
+//    Queue<Point> agendaList;
+//    int BLUE = 3;
 //
-//    public DFSearch(TachoPilot pilot, LightSensor left, LightSensor right, ColorSensor colorSensor, Point currPoint, int height,
+//    public BFSearch(TachoPilot pilot, LightSensor left, LightSensor right,
+//                    ColorSensor colorSensor, Point currPoint, int height,
 //                    int width, Facing currentFacing) {
 //        traveler = new GridTraveler(pilot, left, right, currPoint, height, width,
 //                                    currentFacing);
 //        this.colorSensor = colorSensor;
-//        agendaList = new Stack<Point>();
+//        agendaList = new Queue<Point>();
 //        agendaList.push(currPoint);
 //    }
 //
 //    boolean atGoal() {
-//        return colorSensor.getColorNumber() == goalColor;
+//        return colorSensor.getColorNumber() == BLUE;
 //    }
 //
 //    void search() {
@@ -41,29 +48,14 @@
 //    }
 //
 //    void generateSuccessors() {
-//        if (traveler.currPoint.x < traveler.width) {
-//            agendaList.add(new Point(traveler.currPoint.x + 1,
-//                                        traveler.currPoint.y));
-//        }
-//        if (traveler.currPoint.y < traveler.height) {
-//            agendaList.add(new Point(traveler.currPoint.x,
-//                                    traveler.currPoint.y + 1));
-//        }
-//        if (traveler.currPoint.x > 0) {
-//            agendaList.add(new Point(traveler.currPoint.x - 1,
-//                                        traveler.currPoint.y));
-//        }
-//
-//        if (traveler.currPoint.y > 0) {
-//            agendaList.add(new Point(traveler.currPoint.x, traveler.currPoint.y
-//                                                              - 1));
-//        }
-//
-//        for (int i = 0; i < agendaList.size() && i < 3; i++){
-//            traveler.printPoint(agendaList.get(i));
-//        }
-//        System.out.println("\n------");
-//
+//        if (traveler.currPoint.x < traveler.width)
+//            agendaList.push(new Point(traveler.currPoint.x + 1, traveler.currPoint.y));
+//        if (traveler.currPoint.x > 0)
+//            agendaList.push(new Point(traveler.currPoint.x - 1, traveler.currPoint.y));
+//        if (traveler.currPoint.y < traveler.height)
+//            agendaList.push((new Point(traveler.currPoint.x, traveler.currPoint.y + 1)));
+//        if (traveler.currPoint.y > 0)
+//            agendaList.push(new Point(traveler.currPoint.x, traveler.currPoint.y - 1));
 //    }
 //
 //    public static void main(String[] args) {
@@ -78,20 +70,18 @@
 //        int height = 5, width = 5;
 //        final Point start = new Point(0, 0);
 //
-//        DFSearch df = new DFSearch(pilot, left, right, color, start, height,
+//        BFSearch bf = new BFSearch(pilot, left, right, color, start, height,
 //                                   width, Facing.EAST);
 //
+//        Button.waitForPress();
 //
-//        while (true) {
-//            df.search();
-//            if (df.atGoal())
-//                break;
+//        while (true){
+//            bf.search();
+//            if ( bf.atGoal() ) break;
 //        }
 //
 //        System.out.println("SUCCESS!");
-//        df.traveler.pilot.rotate(720);
-//        Button.waitForPress();
+//        bf.traveler.pilot.rotate(720);
+//
 //    }
 //}
-//
-//

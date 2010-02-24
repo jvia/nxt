@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package search;
 
 import java.util.ArrayList;
@@ -9,7 +5,10 @@ import lejos.nxt.Button;
 
 /**
  * 
- * @author Jeremiah Via
+ *
+ * Exercise 04
+ * 24 February 2010
+ * J. Via, M. Staniaszek
  */
 public class WorldSearch {
 
