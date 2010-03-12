@@ -3,6 +3,7 @@ package search.Grid;
 import java.util.ArrayList;
 import lejos.geom.Point;
 import lejos.nxt.LightSensor;
+import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.TachoPilot;
 import util.Queue;
 
@@ -21,7 +22,7 @@ public class GridTraveler {
         NORTH, SOUTH, EAST, WEST
     };
 
-    private final int MAX_BLACK = 43;
+    private final int MAX_BLACK = 41;
     private final int SENSOR_WHEEL_DISTANCE = 140;
     final TachoPilot pilot;
     final LightSensor left;
@@ -58,7 +59,6 @@ public class GridTraveler {
                 pilot.steer(-250, 360, true);
             }
         }
-        System.out.println("Junction!");
     }
 
     boolean moveOverJunction() {
@@ -242,6 +242,13 @@ public class GridTraveler {
             }
             pilot.stop();
         }
+    }
+
+    public static void main(String[] args) {
+        LightSensor ls = new LightSensor(SensorPort.S4);
+
+        while (true)
+            System.out.println(ls.getLightValue());
     }
 }
 

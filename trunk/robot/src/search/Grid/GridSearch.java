@@ -80,6 +80,12 @@ public class GridSearch {
          * otherwise we add the next generation of points to visit
          */
         while (!(agenda.size() == 0)) {
+           // output agenda
+            for (GridPoint p : agenda)
+                System.out.print(p + " ");
+            System.out.println("");
+            
+
             GridPoint current = agenda.remove(0);
             if (current.equals(goal))
                 return route(current);
@@ -131,6 +137,11 @@ public class GridSearch {
          * otherwise we add the next generation of points to visit
          */
         while (!(agenda.size() == 0)) {
+             // output agenda
+            for (GridPoint p : agenda)
+                System.out.print(p + " ");
+            System.out.println("");
+            
             GridPoint current = agenda.remove(0);
             if (current.equals(goal))
                 return route(current);
@@ -185,12 +196,17 @@ public class GridSearch {
          * otherwise we add the next generation of points to visit
          */
         while (!(agenda.size() == 0)) {
+             // output agenda
+            for (GridPoint p : agenda)
+                System.out.print(p + " ");
+            System.out.println("");
+            
             GridPoint current = agenda.remove(0);
             if (current.equals(goal))
                 return route(current);
             else {
                 visited.add(current);
-                agenda.addAll(current.nextPointsHeuristic(goal, visited, height,
+                agenda.addAll(0,current.nextPointsHeuristic(goal, visited, height,
                                                           width, start.cost++));
                 if (blocked != null)
                     for (int i = 0; i < agenda.size(); i++) {
