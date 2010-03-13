@@ -21,19 +21,20 @@ public class SearchTravelerTest {
         GridPoint goal1 = new GridPoint(2, 2);
 
         RConsole.openBluetooth(60000);
+        
         System.setOut(new PrintStream(RConsole.openOutputStream()));
 
         SearchTraveler st = new SearchTraveler();
         st.bfs(start, goal1);
         System.out.println("\n");
 
-        Button.waitForPress();
-        SearchTraveler st2 = new SearchTraveler();
-        st2.dfs(start, goal1);
-
-        Button.waitForPress();
-        SearchTraveler st3 = new SearchTraveler();
-        st3.aStars(start, goal1);
+//        Button.waitForPress();
+//        SearchTraveler st2 = new SearchTraveler();
+//        st2.dfs(start, goal1);
+//
+//        Button.waitForPress();
+//        SearchTraveler st3 = new SearchTraveler();
+//        st3.aStars(start, goal1);
 
         RConsole.close();
     }

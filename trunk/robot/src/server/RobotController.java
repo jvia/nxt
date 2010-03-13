@@ -5,6 +5,7 @@
 package server;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import lejos.geom.Line;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
@@ -15,6 +16,7 @@ import lejos.robotics.Pose;
 import lejos.robotics.mapping.LineMap;
 import lejos.robotics.proposal.ArcPoseController;
 import lejos.robotics.proposal.DifferentialPilot;
+import localization.MCLParticle;
 import localization.MCLParticleSet;
 import localization.MCLPoseProvider;
 import localization.Scanner;
@@ -83,7 +85,7 @@ class RobotController implements NavigationControls {
         Scanner scanner = new Scanner(Motor.C, new OpticalDistanceSensor(
                 SensorPort.S1));
         Pose startPose = new Pose(x, y, heading);
-        pose = new MCLPoseProvider(startPose, m_pilot, scanner, map, 10, 0);
+        pose = new MCLPoseProvider(startPose, m_pilot, scanner, map, 100, 0);
 
         m_controller = new ArcPoseController(m_pilot, pose);
 
@@ -118,32 +120,56 @@ class RobotController implements NavigationControls {
     public static void main(String[] args) throws InterruptedException {
         RobotController c = new RobotController(220, 20, -90);
         MCLParticleSet set = c.pose.getParticles();
+        set.setDebug(true);
 
-        for (int i = 0; i < set.numParticles(); i++) {
-            float x = set.getParticle(i).getPose().getX();
-            float y = set.getParticle(i).getPose().getY();
-            float heading = set.getParticle(i).getPose().getHeading();
-            System.out.println("(" + x + "," + y + "," + heading + ")");
+        ArrayList<MCLParticle> unique = new ArrayList<MCLParticle>();
 
-            //Button.waitForPress();
-        }
+//        // get unique particles
+//        for (int i = 0; i < set.numParticles(); i++) {
+//            System.out.println(unique.contains(set.getParticle(i)));
+//            if (unique.contains(set.getParticle(i)))
+//                continue;
+//            else
+//                unique.add(set.getParticle(i));
+//            //Button.waitForPress();
+//        }
+//
+//        // output unique partciels
+//        for (MCLParticle p : unique) {
+//            float x = p.getPose().getX();
+//            float y = p.getPose().getY();
+//            float heading = p.getPose().getHeading();
+//            System.out.println("(" + x + "," + y + "," + heading + ")");
+//            Button.waitForPress();
+//        }
+
+        System.out.println("("+c.pose.getPose().getX()+","+c.pose.getPose().getY()+")");
+        Button.waitForPress();
+
 
         c.m_controller.goTo(180, 20);
-        set = c.pose.getParticles();
-
-        Button.waitForPress();
         LCD.clearDisplay();
 
-        for (int i = 0; i < 5; i++) {
-            float x = set.getParticle(i).getPose().getX();
-            float y = set.getParticle(i).getPose().getY();
-            float heading = set.getParticle(i).getPose().getHeading();
-            System.out.println("(" + x + "," + y + "," + heading + ")");
+        set = c.pose.getParticles();
+//        unique.clear();
+//        // get unique particles
+//        for (int i = 0; i < set.numParticles(); i++) {
+//            if (unique.contains(set.getParticle(i)))
+//                continue;
+//            else
+//                unique.add(set.getParticle(i));
+//        }
+//
+//        // output unique partciels
+//        for (MCLParticle p : unique) {
+//            float x = p.getPose().getX();
+//            float y = p.getPose().getY();
+//            float heading = p.getPose().getHeading();
+//            System.out.println("(" + x + "," + y + "," + heading + ")");
+//            Button.waitForPress();
+//        }
 
-        }
-
+        System.out.println("("+c.pose.getPose().getX()+","+c.pose.getPose().getY()+")");
         Button.waitForPress();
-
-
     }
 }

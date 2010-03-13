@@ -57,7 +57,7 @@ public class MCLParticleSet {
     resetEstimate();
   }
 
-  public MCLParticleSet(Pose statPose, RangeMap map, int numParticle, int border){
+  public MCLParticleSet(Pose start, RangeMap map, int numParticle, int border){
       this.map = map;
       this.numParticles = numParticle;
       this.border = border;
@@ -65,8 +65,9 @@ public class MCLParticleSet {
       boundingRect = map.getBoundingRect();
       particles = new MCLParticle[numParticles];
       for (int i = 0; i < numParticle; i++){
-       particles[i] = new MCLParticle(statPose);
+       particles[i] = new MCLParticle(new Pose(start.getX(), start.getY(), start.getHeading()));
       }
+      resetEstimate();
   }
 
   /**

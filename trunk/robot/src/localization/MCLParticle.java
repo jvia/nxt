@@ -84,7 +84,7 @@ public class MCLParticle {
     	  return;
       }
       float diff = robotReading - range;
-      weight *= (float) Math.exp(-(diff * diff) / divisor);
+      weight *= (float) Math.exp (-(diff * diff) / divisor);
     }
   }
 
@@ -116,5 +116,13 @@ public class MCLParticle {
     pose.setHeading((float) (pose.getHeading() + move.getAngleTurned()
         + (angleNoiseFactor * move.getAngleTurned() * rand.nextGaussian())));
     pose.setHeading((float) ((int) (pose.getHeading() + 0.5f) % 360));
+  }
+
+    @Override
+  public boolean equals(Object o){
+      MCLParticle other = (MCLParticle) o;
+      return this.getPose().getX() == other.getPose().getX()
+          && this.getPose().getY() == other.getPose().getY()
+          && this.getPose().getHeading() == other.getPose().getHeading();
   }
 }
