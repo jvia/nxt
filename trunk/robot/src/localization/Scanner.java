@@ -53,7 +53,7 @@ public class Scanner implements RangeScanner {
                 r.add(new RangeReading(angle, distance));
             }
             else { //illegal value
-                r.add(new RangeReading(angle, Float.NaN));
+                r.add(new RangeReading(angle, 800));
             }
         }
 

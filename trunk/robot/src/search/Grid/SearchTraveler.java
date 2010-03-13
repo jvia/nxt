@@ -30,6 +30,24 @@ public class SearchTraveler {
     private TachoPilot pilot;
     private LightSensor left, right;
 
+    public SearchTraveler(TachoPilot pilot, LightSensor left,
+                          LightSensor right, GridPoint start, Facing facing,
+                          int gridWidth, int gridHeight,
+                          ArrayList<GridPoint> blocked) {
+        this.pilot = pilot;
+        this.left = left;
+        this.right = right;
+
+        width = gridWidth;
+        height = gridHeight;
+
+        this.blocked = blocked;
+
+        robot = new GridTraveler(pilot, left, right, start, height, width,
+                                 facing);
+        search = new GridSearch(height, width, blocked);
+    }
+
     public SearchTraveler() {
         pilot = new TachoPilot(RobotConstants.WHEEL_DIAMETER,
                                RobotConstants.TRACK_WIDTH,
@@ -39,12 +57,12 @@ public class SearchTraveler {
         left = new LightSensor(SensorPort.S3);
         right = new LightSensor(SensorPort.S4);
 
-        robot = new GridTraveler(pilot, left, right, new GridPoint(0, 0), height,
-                                 width,
-                                 Facing.EAST);
+        robot = new GridTraveler(pilot, left, right,
+                                 new GridPoint(0, 0), height,
+                                 width, Facing.EAST);
 
-        height = 3;
-        width = 3;
+        height = 5;
+        width = 5;
 
         blocked = new ArrayList<GridPoint>();
 
@@ -54,9 +72,8 @@ public class SearchTraveler {
     public void dfs(GridPoint start, GridPoint goal) {
         ArrayList<GridPoint> route = search.dfs(start, goal);
         ArrayList<String> moves = robot.generateMoves(route);
-        System.out.println(moves.size());
 
-        System.out.print("\n\n>>");
+        System.out.print("\n\n>> ROUTE: ");
         for (String move : moves)
             System.out.print(move);
 
@@ -67,9 +84,8 @@ public class SearchTraveler {
     public void bfs(GridPoint start, GridPoint goal) {
         ArrayList<GridPoint> route = search.bfs(start, goal);
         ArrayList<String> moves = robot.generateMoves(route);
-        System.out.println(moves.size());
 
-        System.out.print("\n\n>>");
+        System.out.print("\n\n>> ROUTE: ");
         for (String move : moves)
             System.out.print(move);
 
@@ -80,9 +96,8 @@ public class SearchTraveler {
     public void aStars(GridPoint start, GridPoint goal) {
         ArrayList<GridPoint> route = search.aStar(start, goal);
         ArrayList<String> moves = robot.generateMoves(route);
-        System.out.println(moves.size());
 
-        System.out.print("\n\n>>");
+        System.out.print("\n\n>> ROUTE: ");
         for (String move : moves)
             System.out.print(move);
 

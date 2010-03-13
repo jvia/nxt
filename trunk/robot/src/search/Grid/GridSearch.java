@@ -80,11 +80,11 @@ public class GridSearch {
          * otherwise we add the next generation of points to visit
          */
         while (!(agenda.size() == 0)) {
-           // output agenda
+            // output agenda
             for (GridPoint p : agenda)
                 System.out.print(p + " ");
             System.out.println("");
-            
+
 
             GridPoint current = agenda.remove(0);
             if (current.equals(goal))
@@ -121,9 +121,10 @@ public class GridSearch {
         assert (goal.y < height && goal.y > 0);
 
         /* Points to visit */
-        ArrayList<GridPoint> agenda = new ArrayList<GridPoint>(),
-                /* Points visited */
-                visited = new ArrayList<GridPoint>();
+        ArrayList<GridPoint> agenda = new ArrayList<GridPoint>();
+
+        /* Points visited */
+        ArrayList<GridPoint> visited = new ArrayList<GridPoint>();
 
 
         /* Previous is set to null so that route gneration won't
@@ -137,12 +138,10 @@ public class GridSearch {
          * otherwise we add the next generation of points to visit
          */
         while (!(agenda.size() == 0)) {
-             // output agenda
-            for (GridPoint p : agenda)
-                System.out.print(p + " ");
-            System.out.println("");
-            
+
             GridPoint current = agenda.remove(0);
+            //System.out.println(agenda.size() + " items in the agenda. Expanding " + current);
+           // try{Thread.sleep(100);}catch (InterruptedException ie){}
             if (current.equals(goal))
                 return route(current);
             else {
@@ -196,17 +195,18 @@ public class GridSearch {
          * otherwise we add the next generation of points to visit
          */
         while (!(agenda.size() == 0)) {
-             // output agenda
+            // output agenda
             for (GridPoint p : agenda)
                 System.out.print(p + " ");
             System.out.println("");
-            
+
             GridPoint current = agenda.remove(0);
             if (current.equals(goal))
                 return route(current);
             else {
                 visited.add(current);
-                agenda.addAll(0,current.nextPointsHeuristic(goal, visited, height,
+                agenda.addAll(0,
+                              current.nextPointsHeuristic(goal, visited, height,
                                                           width, start.cost++));
                 if (blocked != null)
                     for (int i = 0; i < agenda.size(); i++) {

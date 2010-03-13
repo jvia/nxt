@@ -22,7 +22,7 @@ public class GridTraveler {
         NORTH, SOUTH, EAST, WEST
     };
 
-    private final int MAX_BLACK = 41;
+    private final int MAX_BLACK = 46;
     private final int SENSOR_WHEEL_DISTANCE = 140;
     final TachoPilot pilot;
     final LightSensor left;

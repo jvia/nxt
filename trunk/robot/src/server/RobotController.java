@@ -118,7 +118,7 @@ class RobotController implements NavigationControls {
      * @param args
      */
     public static void main(String[] args) throws InterruptedException {
-        RobotController c = new RobotController(220, 20, -90);
+        RobotController c = new RobotController(210, 30, 90);
         MCLParticleSet set = c.pose.getParticles();
         set.setDebug(true);
 
@@ -147,27 +147,27 @@ class RobotController implements NavigationControls {
         Button.waitForPress();
 
 
-        c.m_controller.goTo(180, 20);
+        c.m_controller.goTo(210, 30);
         LCD.clearDisplay();
 
         set = c.pose.getParticles();
-//        unique.clear();
-//        // get unique particles
-//        for (int i = 0; i < set.numParticles(); i++) {
-//            if (unique.contains(set.getParticle(i)))
-//                continue;
-//            else
-//                unique.add(set.getParticle(i));
-//        }
+        unique.clear();
+        // get unique particles
+        for (int i = 0; i < 5; i++) {
+            if (unique.contains(set.getParticle(i)))
+                continue;
+            else
+                unique.add(set.getParticle(i));
+        }
 //
-//        // output unique partciels
-//        for (MCLParticle p : unique) {
-//            float x = p.getPose().getX();
-//            float y = p.getPose().getY();
-//            float heading = p.getPose().getHeading();
-//            System.out.println("(" + x + "," + y + "," + heading + ")");
-//            Button.waitForPress();
-//        }
+        // output unique partciels
+        for (MCLParticle p : unique) {
+            float x = p.getPose().getX();
+            float y = p.getPose().getY();
+            float heading = p.getPose().getHeading();
+            System.out.println("(" + x + "," + y + "," + heading + ")");
+            Button.waitForPress();
+        }
 
         System.out.println("("+c.pose.getPose().getX()+","+c.pose.getPose().getY()+")");
         Button.waitForPress();
