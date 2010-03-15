@@ -5,10 +5,8 @@
 package server;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import lejos.geom.Line;
 import lejos.nxt.Button;
-import lejos.nxt.LCD;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.addon.OpticalDistanceSensor;
@@ -16,7 +14,6 @@ import lejos.robotics.Pose;
 import lejos.robotics.mapping.LineMap;
 import lejos.robotics.proposal.ArcPoseController;
 import lejos.robotics.proposal.DifferentialPilot;
-import localization.MCLParticle;
 import localization.MCLParticleSet;
 import localization.MCLPoseProvider;
 import localization.Scanner;
@@ -85,7 +82,7 @@ class RobotController implements NavigationControls {
         Scanner scanner = new Scanner(Motor.C, new OpticalDistanceSensor(
                 SensorPort.S1));
         Pose startPose = new Pose(x, y, heading);
-        pose = new MCLPoseProvider(startPose, m_pilot, scanner, map, 100, 0);
+        pose = new MCLPoseProvider(startPose,  m_pilot, scanner, map, 1, 0);
 
         m_controller = new ArcPoseController(m_pilot, pose);
 
@@ -122,21 +119,15 @@ class RobotController implements NavigationControls {
         MCLParticleSet set = c.pose.getParticles();
         set.setDebug(true);
 
+
+
         System.out.println("Pose:(" + (int) c.pose.getPose().getX()
                             + "," + (int) c.pose.getPose().getY() + ")");
         Button.waitForPress();
 
-        c.m_controller.goTo(180, 40);
+        c.m_controller.goTo(190, 30);
         System.out.println("Pose:(" + (int) c.pose.getPose().getX()
                             + "," + (int) c.pose.getPose().getY() + ")");
         Button.waitForPress();
-
-
-        c.m_controller.goTo(160, 60);
-        System.out.println("Pose:(" + (int) c.pose.getPose().getX()
-                            + "," + (int) c.pose.getPose().getY() + ")");
-        Button.waitForPress();
-
-
     }
 }

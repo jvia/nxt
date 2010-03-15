@@ -34,9 +34,9 @@ public class NavigationProtocolServer implements Runnable {
                 NavigationControlProtocol.ControlCommands cmd = m_protocol.
                         readHeader();
                 switch (cmd) {
-//                    case GET_MAP:
-//                        m_protocol.writeMap(m_target.getMap());
-//                        break;
+                    case GET_MAP:
+                        m_protocol.writeMap(m_target.getMap());
+                        break;
                     case GET_POSE:
                         m_protocol.writePose(m_target.getPose());
                         break;

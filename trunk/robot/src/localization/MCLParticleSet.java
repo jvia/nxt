@@ -3,6 +3,7 @@ package localization;
 import java.awt.Rectangle;
 import lejos.geom.*;
 import java.io.*;
+import lejos.nxt.Button;
 import lejos.robotics.*;
 import lejos.robotics.mapping.RangeMap;
 import lejos.robotics.Movement;
@@ -36,7 +37,9 @@ public class MCLParticleSet {
     private int border = 10;	// The minimum distance from the edge of the map
     // to generate a particle.
     private Rectangle boundingRect;
-    private boolean debug = false;
+    private boolean debug = true;
+    // TODO ADDED
+    private static final float MAX_READING = 90;
 
     /**
      * Create a set of particles randomly distributed with the given map.
@@ -55,17 +58,18 @@ public class MCLParticleSet {
         resetEstimate();
     }
 
-    public MCLParticleSet(Pose start, RangeMap map, int numParticle, int border) {
+    public MCLParticleSet(Pose start, RangeMap map, int numParticles, int border) {
         this.map = map;
-        this.numParticles = numParticle;
+        this.numParticles = numParticles;
         this.border = border;
 
         boundingRect = map.getBoundingRect();
         particles = new MCLParticle[numParticles];
-        for (int i = 0; i < numParticle; i++) {
-            particles[i] = new MCLParticle(new Pose(start.getX(), start.getY(), start.
-                    getHeading()));
-            particles[i].setWeight(1/numParticle);
+        for (int i = 0; i < numParticles; i++) {
+            particles[i] = new MCLParticle(new Pose(start.getX(),
+                                                    start.getY(),
+                                                    start.getHeading()));
+            particles[i].setWeight(1/numParticles);
         }
 
         estimatedX = start.getX();
@@ -155,9 +159,12 @@ public class MCLParticleSet {
 
         while (count < numParticles) {
             iterations++;
+
+            // will repreat particles or completely generate new particles
             if (iterations >= maxIterations) {
                 if (debug)
                     System.out.println("Lost: count = " + count);
+
                 if (count > 0) { // Duplicate the ones we have so far
                     for (int i = count; i < numParticles; i++) {
                         particles[i] = new MCLParticle(particles[i % count].
@@ -167,6 +174,11 @@ public class MCLParticleSet {
                     return false;
                 }
                 else { // Completely lost - generate a new set of particles
+
+                    // TODO remove debug
+                    System.out.println("Completely lost");
+                    Button.waitForPress();
+
                     for (int i = 0; i < numParticles; i++) {
                         particles[i] = generateParticle();
                     }
@@ -174,6 +186,8 @@ public class MCLParticleSet {
                     return true;
                 }
             }
+
+
             float rand = (float) Math.random();
             for (int i = 0; i < numParticles && count < numParticles; i++) {
                 if (oldParticles[i].getWeight() >= rand) {

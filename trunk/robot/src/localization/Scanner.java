@@ -50,14 +50,9 @@ public class Scanner implements RangeScanner {
         for (int angle = -150; angle <= 180; angle += 30) {
             turret.rotateTo(angle);
             float distance = sensor.getDistance() / 10;
-            if (distance < 80) { // legal value
-                r.add(new RangeReading(angle, distance));
-            }
-            else { //illegal value
-                r.add(new RangeReading(angle, 80));
-            }
+            r.add(new RangeReading(angle, distance));
         }
-
+        
         RangeReadings rr = new RangeReadings(0);
         rr.addAll(r);
 
@@ -79,14 +74,14 @@ public class Scanner implements RangeScanner {
 
         RangeReadings r = scanner.getRangeValues();
 
-        System.out.println("Size:"+r.size());
-        System.out.println("Complete:"+!r.incomplete());
+        System.out.println("Size:" + r.size());
+        System.out.println("Complete:" + !r.incomplete());
 
         int screen = 0;
         for (RangeReading reading : r) {
-            int range = (int)reading.getRange();
-            System.out.println(reading.getAngle() +"°: "+range);
-            if (screen++ == 4){
+            int range = (int) reading.getRange();
+            System.out.println(reading.getAngle() + "°: " + range);
+            if (screen++ == 4) {
                 Button.waitForPress();
                 LCD.clearDisplay();
                 screen = 0;

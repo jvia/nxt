@@ -24,6 +24,8 @@ import lejos.geom.*;
  * 
  */
 public class MCLParticle {
+    // TODO ADDED
+    private static boolean debug = true;
   private static Random rand = new Random();
  
   // Instance variables (kept to minimum to allow maximum number of particles)
@@ -78,13 +80,20 @@ public class MCLParticle {
       float angle = rr.getAngle(i);
       tempPose.setHeading(pose.getHeading() + angle);      
       float robotReading = rr.getRange(i);
+
+      // TODO added
+      if (robotReading >= 90)
+          continue;
+      
       float range = map.range(tempPose);
       if (range < 0) {
     	  weight = 0;
     	  return;
       }
+
       float diff = robotReading - range;
       weight *= (float) Math.exp (-(diff * diff) / divisor);
+      if (debug) System.out.println("Weight:"+weight);
     }
   }
 
