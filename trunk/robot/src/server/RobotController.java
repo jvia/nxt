@@ -122,54 +122,21 @@ class RobotController implements NavigationControls {
         MCLParticleSet set = c.pose.getParticles();
         set.setDebug(true);
 
-        ArrayList<MCLParticle> unique = new ArrayList<MCLParticle>();
+        System.out.println("Pose:(" + (int) c.pose.getPose().getX()
+                            + "," + (int) c.pose.getPose().getY() + ")");
+        Button.waitForPress();
 
-//        // get unique particles
-//        for (int i = 0; i < set.numParticles(); i++) {
-//            System.out.println(unique.contains(set.getParticle(i)));
-//            if (unique.contains(set.getParticle(i)))
-//                continue;
-//            else
-//                unique.add(set.getParticle(i));
-//            //Button.waitForPress();
-//        }
-//
-//        // output unique partciels
-//        for (MCLParticle p : unique) {
-//            float x = p.getPose().getX();
-//            float y = p.getPose().getY();
-//            float heading = p.getPose().getHeading();
-//            System.out.println("(" + x + "," + y + "," + heading + ")");
-//            Button.waitForPress();
-//        }
-
-        System.out.println("("+c.pose.getPose().getX()+","+c.pose.getPose().getY()+")");
+        c.m_controller.goTo(180, 40);
+        System.out.println("Pose:(" + (int) c.pose.getPose().getX()
+                            + "," + (int) c.pose.getPose().getY() + ")");
         Button.waitForPress();
 
 
-        c.m_controller.goTo(210, 30);
-        LCD.clearDisplay();
-
-        set = c.pose.getParticles();
-        unique.clear();
-        // get unique particles
-        for (int i = 0; i < 5; i++) {
-            if (unique.contains(set.getParticle(i)))
-                continue;
-            else
-                unique.add(set.getParticle(i));
-        }
-//
-        // output unique partciels
-        for (MCLParticle p : unique) {
-            float x = p.getPose().getX();
-            float y = p.getPose().getY();
-            float heading = p.getPose().getHeading();
-            System.out.println("(" + x + "," + y + "," + heading + ")");
-            Button.waitForPress();
-        }
-
-        System.out.println("("+c.pose.getPose().getX()+","+c.pose.getPose().getY()+")");
+        c.m_controller.goTo(160, 60);
+        System.out.println("Pose:(" + (int) c.pose.getPose().getX()
+                            + "," + (int) c.pose.getPose().getY() + ")");
         Button.waitForPress();
+
+
     }
 }

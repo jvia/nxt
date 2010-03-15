@@ -2,6 +2,7 @@ package localization;
 
 import java.util.ArrayList;
 import lejos.nxt.Button;
+import lejos.nxt.LCD;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.addon.OpticalDistanceSensor;
@@ -48,16 +49,16 @@ public class Scanner implements RangeScanner {
         ArrayList<RangeReading> r = new ArrayList<RangeReading>();
         for (int angle = -150; angle <= 180; angle += 30) {
             turret.rotateTo(angle);
-            float distance = sensor.getDistance();
-            if (distance < 800) { // legal value
+            float distance = sensor.getDistance() / 10;
+            if (distance < 80) { // legal value
                 r.add(new RangeReading(angle, distance));
             }
             else { //illegal value
-                r.add(new RangeReading(angle, 800));
+                r.add(new RangeReading(angle, 80));
             }
         }
 
-        RangeReadings rr = new RangeReadings(r.size());
+        RangeReadings rr = new RangeReadings(0);
         rr.addAll(r);
 
         // reset to starting point and power off to save battery
@@ -78,8 +79,18 @@ public class Scanner implements RangeScanner {
 
         RangeReadings r = scanner.getRangeValues();
 
+        System.out.println("Size:"+r.size());
+        System.out.println("Complete:"+!r.incomplete());
+
+        int screen = 0;
         for (RangeReading reading : r) {
-            System.out.println(reading.getAngle() +"°: "+reading.getRange());
+            int range = (int)reading.getRange();
+            System.out.println(reading.getAngle() +"°: "+range);
+            if (screen++ == 4){
+                Button.waitForPress();
+                LCD.clearDisplay();
+                screen = 0;
+            }
         }
 
         Button.waitForPress();

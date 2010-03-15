@@ -65,6 +65,7 @@ public class MCLParticleSet {
         for (int i = 0; i < numParticle; i++) {
             particles[i] = new MCLParticle(new Pose(start.getX(), start.getY(), start.
                     getHeading()));
+            particles[i].setWeight(1/numParticle);
         }
 
         estimatedX = start.getX();

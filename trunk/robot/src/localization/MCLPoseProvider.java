@@ -48,7 +48,13 @@ public class MCLPoseProvider implements PoseProvider, MoveListener {
         if (readingsRequired) {
             RangeReadings rr = scanner.getRangeValues();
             readingsRequired = false;
+
+            ///// TODO remove debug
+            System.out.println("Complete:"+!rr.incomplete());
+            ///////
+            
             if (!rr.incomplete()) {
+                System.out.println("here");
                 particles.calculateWeights(rr, map);
                 particles.resample(); // Cannot indicate robot is lost
             }
