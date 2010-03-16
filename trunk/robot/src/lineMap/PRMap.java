@@ -15,19 +15,22 @@ import lejos.robotics.mapping.PRLineMap;
  */
 public class PRMap {
 
+    final int ROBOT_WIDTH = 6;
     final int MAX_DISTANCE = 150;
     final int MAX_NODES = 200;
     PRLineMap lineMap;
     ArrayList<PRMapNode> roadMapNodes;
-    ArrayList<ArrayList<PRMapNode>> adjacencyList = new ArrayList<ArrayList<PRMapNode>>();
+    ArrayList<Line> edges;
+//    ArrayList<ArrayList<PRMapNode>> adjacencyList = new ArrayList<ArrayList<PRMapNode>>();
 
     /**
-     * Defualt constructor initialises the roadMapNodes array and the lineMap object.
+     * Default constructor initialises the roadMapNodes array and the lineMap object.
      * @param lineMap
      */
     public PRMap(PRLineMap lineMap) {
         this.lineMap = lineMap;
         roadMapNodes = new ArrayList<PRMapNode>();
+        edges = new ArrayList<Line>();
     }
 
     public void makeRoadMap() {
@@ -36,16 +39,20 @@ public class PRMap {
             roadMapNodes.add(newNode);
             ArrayList<PRMapNode> neighbours = newNode.nodesNearTo(roadMapNodes, MAX_DISTANCE);
             for (PRMapNode pRMapNode : neighbours) {
-                newNode.addLink(pRMapNode);
+                if (collisionFreePath(newNode, pRMapNode)) {
+                    newNode.addLink(pRMapNode);
+                }
             }
         }
 //        createAdjacencyList();
     }
 
-    public boolean collisionFreePath(PRMapNode p1, PRMapNode p2) throws IOException {
+    public boolean collisionFreePath(PRMapNode p1, PRMapNode p2){
         Line link = new Line(p1.getPoint().x, p1.getPoint().y, p2.getPoint().x, p2.getPoint().y);
+        Line up = new Line(p1.getPoint().x + ROBOT_WIDTH, p1.getPoint().y + ROBOT_WIDTH, p2.getPoint().x + ROBOT_WIDTH, p2.getPoint().y + ROBOT_WIDTH);
+        Line down = new Line(p1.getPoint().x - ROBOT_WIDTH, p1.getPoint().y - ROBOT_WIDTH, p2.getPoint().x - ROBOT_WIDTH, p2.getPoint().y - ROBOT_WIDTH);
         for (Line line : lineMap.getLines()) {
-            if (link.intersectsLine(line));
+            if (link.intersectsLine(line) || down.intersectsLine(line) || up.intersectsLine(line));
             return false;
         }
         return true;
@@ -69,26 +76,25 @@ public class PRMap {
         return generatedPoint;
     }
 
-    /**
-     * Creates an adjacency list of all the points.
-     */
-    public void createAdjacencyList() {
-        // Adds this node's connected components to the matrix.
-        adjacencyList.add(roadMapNodes.get(0).linkedTo);
-        // For each arraylist of PRMapNodes in the arraylist...
-        for (ArrayList<PRMapNode> arrayList : adjacencyList) {
-            /**
-             * Add each node's linkedTo list to the arrayList, if it is not already
-             * present in the arraylist.
-             */
-            for (PRMapNode pRMapNode : arrayList) {
-                if (!adjacencyList.contains(pRMapNode.linkedTo)) {
-                    adjacencyList.add(pRMapNode.linkedTo);
-                }
-            }
-        }
-    }
-
+//    /**
+//     * Creates an adjacency list of all the points.
+//     */
+//    public void createAdjacencyList() {
+//        // Adds this node's connected components to the matrix.
+//        adjacencyList.add(roadMapNodes.get(0).linkedTo);
+//        // For each arraylist of PRMapNodes in the arraylist...
+//        for (ArrayList<PRMapNode> arrayList : adjacencyList) {
+//            /**
+//             * Add each node's linkedTo list to the arrayList, if it is not already
+//             * present in the arraylist.
+//             */
+//            for (PRMapNode pRMapNode : arrayList) {
+//                if (!adjacencyList.contains(pRMapNode.linkedTo)) {
+//                    adjacencyList.add(pRMapNode.linkedTo);
+//                }
+//            }
+//        }
+//    }
     public ArrayList<PRMapNode> aStar(PRMapNode start, PRMapNode goal) {
         assert (start.location.x < lineMap.getBoundingRect().width && start.location.x > 0);
         assert (start.location.y < lineMap.getBoundingRect().height && start.location.y > 0);
