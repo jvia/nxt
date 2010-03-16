@@ -4,7 +4,6 @@
  */
 package lineMap;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import lejos.geom.Line;
@@ -47,7 +46,7 @@ public class PRMap {
 //        createAdjacencyList();
     }
 
-    public boolean collisionFreePath(PRMapNode p1, PRMapNode p2){
+    public boolean collisionFreePath(PRMapNode p1, PRMapNode p2) {
         Line link = new Line(p1.getPoint().x, p1.getPoint().y, p2.getPoint().x, p2.getPoint().y);
         Line up = new Line(p1.getPoint().x + ROBOT_WIDTH, p1.getPoint().y + ROBOT_WIDTH, p2.getPoint().x + ROBOT_WIDTH, p2.getPoint().y + ROBOT_WIDTH);
         Line down = new Line(p1.getPoint().x - ROBOT_WIDTH, p1.getPoint().y - ROBOT_WIDTH, p2.getPoint().x - ROBOT_WIDTH, p2.getPoint().y - ROBOT_WIDTH);
@@ -142,13 +141,27 @@ public class PRMap {
      * @param point current point that is equal to the goal point
      * @return list of points from start to goal
      */
-    private ArrayList<PRMapNode> route(PRMapNode point) {
+    public ArrayList<PRMapNode> route(PRMapNode point) {
         ArrayList<PRMapNode> route = new ArrayList<PRMapNode>();
         while (point != null) {
             route.add(0, point);
             point = point.previous;
         }
-
         return route;
+    }
+
+    public void connectStartAndGoal(PRMapNode start, PRMapNode goal) {
+        for (PRMapNode pRMapNode : start.nodesNearTo(roadMapNodes, MAX_DISTANCE)) {
+            if (collisionFreePath(start, pRMapNode)) {
+                start.addLink(pRMapNode);
+            }
+        }
+        for (PRMapNode pRMapNode : goal.nodesNearTo(roadMapNodes, MAX_DISTANCE)) {
+            if (collisionFreePath(start, pRMapNode)) {
+                start.addLink(pRMapNode);
+            }
+        }
+        roadMapNodes.add(start);
+        roadMapNodes.add(goal);
     }
 }
