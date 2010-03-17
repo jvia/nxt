@@ -34,7 +34,7 @@ public class TravelingRobot {
     // static varibles
 
     private static float MAX_READING = 150;
-    private static final int ERROR_THRESHOLD = 10;
+    private static final int ERROR_THRESHOLD = 2;
     // the world
     private RangeMap map;
     private ArrayList<Point> colorsToVisit;
@@ -47,9 +47,7 @@ public class TravelingRobot {
     private ArcPoseController poseController;
     private RangeReadings readings;
     private Pose start;
-    private float MAX_DISTANCE = 50f;
-    private float BORDER = 0f;
-    private float PROJECTION = 12f;
+    private float MAX_DISTANCE = 10f;
 
     public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor,
             ArrayList<Point> colorsToVisit, Pose start*/) {
@@ -63,7 +61,8 @@ public class TravelingRobot {
                 RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
                 RobotConstants.leftMotor, RobotConstants.rightMotor, true);
         Scanner scanner = new Scanner(Motor.C, sensor);
-        mcl = new MCLPoseProvider(pilot, scanner, map, 300, 0);
+        start = new Pose(30, 20, 0);
+        mcl = new MCLPoseProvider(start, pilot, scanner, map, 200, 0);
         set = mcl.getParticles();
     }
 
@@ -125,11 +124,12 @@ public class TravelingRobot {
     }
 
     public static void main(String[] args) {
-        RConsole.openBluetooth(0);
+        RConsole.openBluetooth(60000);
         System.setOut(new PrintStream(RConsole.openOutputStream()));
 
         float width = 119f;
         float height = 61f;
+
         Line[] lines = new Line[]{
             // world outline
             new Line(0f, 0f, 0f, height),
@@ -141,7 +141,8 @@ public class TravelingRobot {
             new Line(32.5f, 36f, 32.5f, height),
             // brown box
             new Line(102.5f, 38f, width, 38f),
-            new Line(102.5f, 38f, 102.5f, height)};
+            new Line(102.5f, 38f, 102.5f, height)
+        };
 
         Rectangle bound = new Rectangle(0, 0, (int) width, (int) height);
         RangeMap map = new LineMap(lines, bound);
@@ -151,7 +152,6 @@ public class TravelingRobot {
         System.out.println("--- At ---\t\t--- Error ---\t\t--- Weight ---");
         Pose pose = robot.localize();
         System.out.println("\nAt: (" + pose.getX() + ", " + pose.getY() + ")");
-        Button.waitForPress();
         RConsole.close();
     }
 }

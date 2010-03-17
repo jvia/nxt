@@ -58,27 +58,8 @@ public class MCLParticleSet {
     }
 
     public MCLParticleSet(Pose start, RangeMap map, int numParticles, int border) {
-        this.map = map;
-        this.numParticles = numParticles;
-        this.border = border;
-
-        boundingRect = map.getBoundingRect();
-        particles = new MCLParticle[numParticles];
-        for (int i = 0; i < numParticles; i++) {
-            particles[i] = new MCLParticle(new Pose(start.getX(),
-                                                    start.getY(),
-                                                    start.getHeading()));
-            particles[i].setWeight(1/numParticles);
-        }
-
-        estimatedX = start.getX();
-        estimatedY = start.getY();
-        estimatedAngle = start.getHeading();
-
-        minX = boundingRect.x;
-        minY = boundingRect.y;
-        maxX = boundingRect.x + boundingRect.width;
-        maxY = boundingRect.y + boundingRect.height;
+        this (map, numParticles, border);
+        particles[0] = new MCLParticle(start);
     }
 
     /**

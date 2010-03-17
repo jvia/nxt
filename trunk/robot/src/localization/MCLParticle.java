@@ -24,7 +24,6 @@ import lejos.nxt.Button;
  * 
  */
 public class MCLParticle {
-    // TODO ADDED
 
     private static boolean debug = true;
     private static Random rand = new Random();
@@ -85,7 +84,7 @@ public class MCLParticle {
             float robotReading = rr.getRange(i);
 
             /*  10cm < valid sensor value < 80 */
-            if (robotReading >= 80 || robotReading <= 10)
+            if (robotReading >= 150 || robotReading <= 10)
                 continue;
 
             float range = map.range(tempPose);
