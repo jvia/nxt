@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import lejos.geom.Line;
 import lejos.robotics.mapping.PRLineMap;
+import lejos.robotics.proposal.WayPoint;
 
 /*
  * Author Michal Staniaszek
@@ -94,7 +95,7 @@ public class PRMap {
 //            }
 //        }
 //    }
-    public ArrayList<PRMapNode> aStar(PRMapNode start, PRMapNode goal) {
+    public ArrayList<WayPoint> aStar(PRMapNode start, PRMapNode goal) {
         assert (start.location.x < lineMap.getBoundingRect().width && start.location.x > 0);
         assert (start.location.y < lineMap.getBoundingRect().height && start.location.y > 0);
         assert (goal.location.x < lineMap.getBoundingRect().width && goal.location.x > 0);
@@ -141,11 +142,14 @@ public class PRMap {
      * @param point current point that is equal to the goal point
      * @return list of points from start to goal
      */
-    public ArrayList<PRMapNode> route(PRMapNode point) {
-        ArrayList<PRMapNode> route = new ArrayList<PRMapNode>();
+    public ArrayList<WayPoint> route(PRMapNode point) {
+        PRMapNode pNode = point;
+        WayPoint wayPoint = new WayPoint(pNode.location);
+        ArrayList<WayPoint> route = new ArrayList<WayPoint>();
         while (point != null) {
-            route.add(0, point);
-            point = point.previous;
+            route.add(0, wayPoint);
+            pNode = pNode.previous;
+            wayPoint = new WayPoint(pNode.location);
         }
         return route;
     }
