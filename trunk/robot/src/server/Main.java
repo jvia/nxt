@@ -12,39 +12,36 @@ import proxy.NavigationControls;
  */
 public class Main {
 
-    @SuppressWarnings("static-access")
-    public static void main(String[] args) {
-        NavigationControls controls = new RobotController(10, 10, 0);
+  public static void main(String[] args) {
+    NavigationControls controls = new RobotController();
 
 
-        BTConnection connection = Bluetooth.waitForConnection();
+    BTConnection connection = Bluetooth.waitForConnection();
 
 
-        Runnable server = new NavigationProtocolServer(controls,
-                                                       connection.
-                openDataInputStream(), connection.openDataOutputStream());
+    Runnable server = new NavigationProtocolServer(controls,
+            connection.openDataInputStream(), connection.openDataOutputStream());
 
 
-        try {
-            server.run();
-        }
-        catch (RuntimeException e) {
-            String message = e.getMessage();
-            if (message != null) {
-                System.out.println(e.getMessage());
-            }
-            Sound.buzz();
-            Button.ESCAPE.waitForPress();
-        }
-
-        //
-        //
-        //    while (!Button.ESCAPE.isPressed()) {
-        //      Pose currentPose = controls.getPose();
-        //      Pose desiredPose = new Pose(currentPose.getX() + 5f, currentPose.getY() + 5f, currentPose.getHeading() + 45f);
-        //      controls.goTo(desiredPose);
-        //    }
-
-
+    try {
+      server.run();
+    } catch (RuntimeException e) {
+      String message = e.getMessage();
+      if (message != null) {
+        System.out.println(e.getMessage());
+      }
+      Sound.buzz();
+      Button.ESCAPE.waitForPress();
     }
+
+    //
+    //
+    //    while (!Button.ESCAPE.isPressed()) {
+    //      Pose currentPose = controls.getPose();
+    //      Pose desiredPose = new Pose(currentPose.getX() + 5f, currentPose.getY() + 5f, currentPose.getHeading() + 45f);
+    //      controls.goTo(desiredPose);
+    //    }
+
+
+  }
 }

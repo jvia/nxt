@@ -34,15 +34,17 @@ public class NavigationProtocolServer implements Runnable {
                 NavigationControlProtocol.ControlCommands cmd = m_protocol.
                         readHeader();
                 switch (cmd) {
-                    case GET_MAP:
-                        m_protocol.writeMap(m_target.getMap());
-                        break;
                     case GET_POSE:
                         m_protocol.writePose(m_target.getPose());
                         break;
                     case GO_TO:
                         m_target.goTo(m_protocol.readPose());
                         break;
+                    case GET_LINES:
+                        m_protocol.writeLines(m_target.getLines());
+                        break;
+                    default:
+                        throw new RuntimeException("Missing enum handler");
                 }
 
             }

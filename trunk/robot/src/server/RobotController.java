@@ -6,17 +6,13 @@ package server;
 
 import java.awt.Rectangle;
 import lejos.geom.Line;
-import lejos.nxt.Button;
+import lejos.geom.Point;
 import lejos.nxt.Motor;
-import lejos.nxt.SensorPort;
-import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.robotics.Pose;
-import lejos.robotics.mapping.LineMap;
 import lejos.robotics.proposal.ArcPoseController;
+import lejos.robotics.proposal.DeadReckonerPoseProvider;
 import lejos.robotics.proposal.DifferentialPilot;
-import localization.MCLParticleSet;
-import localization.MCLPoseProvider;
-import localization.Scanner;
+import localization.LineMap;
 import proxy.NavigationControls;
 import util.RobotConstants;
 
@@ -24,67 +20,51 @@ import util.RobotConstants;
  *
  * @author nah
  */
-class RobotController implements NavigationControls {
+public class RobotController implements NavigationControls {
 
     private final DifferentialPilot m_pilot;
-//    private final DeadReckonerPoseProvider m_poser;
+    private final DeadReckonerPoseProvider m_poser;
     private final ArcPoseController m_controller;
-    private final MCLPoseProvider pose;
-    private final LineMap map;
+    float width = 119f;
+    float height = 61f;
+    Line[] lines;
+    LineMap map;
 
     /**
      * Create controls in cm coordinate frame.
      *
      * TODO: Add parameters to describe robot.
      */
-    public RobotController(float x, float y, float heading) {
+    public RobotController() {
+
+
+
+        lines = new Line[]{
+            // world outline
+            new Line(0f, 0f, 0f, height),
+            new Line(0f, 0f, width, 0f),
+            new Line(0f, height, width, height),
+            new Line(width, 0f, width, height),
+            // document box
+            new Line(0f, 36f, 32.5f, 36f),
+            new Line(32.5f, 36f, 32.5f, height),
+            // brown box
+            new Line(102.5f, 38f, width, 38f),
+            new Line(102.5f, 38f, 102.5f, height)
+        };
+
+        map = new LineMap(lines, new Rectangle((int) width,
+                                                       (int) height));
+
+
         m_pilot = new DifferentialPilot(
                 RobotConstants.WHEEL_DIAMETER / 10,
                 RobotConstants.TRACK_WIDTH / 10,
-                RobotConstants.leftMotor,
-                RobotConstants.rightMotor,
-                true); // robot uses reverse configuration
+                Motor.B, Motor.C);
 
-//        m_poser = new DeadReckonerPoseProvider(m_pilot);
-//        m_poser.setPose(x, y, heading);
-
-        Line[] lines = new Line[]{
-            // tinky-winky
-            new Line(0f, 64f, 60f, 64f),
-            new Line(60f, 64f, 60f, 42f),
-            new Line(60f, 42f, 100f, 42f),
-            new Line(100f, 0f, 100f, 42f),
-            // gromit
-            new Line(36f, 137f, 60f, 137f),
-            new Line(36f, 137f, 36f, 156f),
-            new Line(36f, 156f, 60f, 156f),
-            new Line(60f, 137f, 60f, 156f),
-            // preston
-            new Line(87f, 180f, 87f, 240f),
-            new Line(87f, 180f, 130f, 180f),
-            new Line(130f, 180f, 130f, 240f),
-            // jaffle
-            new Line(113.5f, 123f, 157f, 123f),
-            new Line(113.5f, 123f, 113.5f, 83f),
-            new Line(113.5f, 83f, 157f, 83f),
-            new Line(157f, 123f, 157f, 83f),
-            // wallace
-            new Line(174f, 197f, 174f, 157.5f),
-            new Line(174f, 197f, 198f, 197f),
-            new Line(198f, 197f, 198f, 157.5f),
-            new Line(174f, 157.5f, 198f, 157.5f),
-            // gandalf
-            new Line(220f, 0f, 220f, 21.5f),
-            new Line(240f, 21.5f, 220f, 21.5f)
-        };
-
-        map = new LineMap(lines, new Rectangle(0, 0, 240, 240));
-        Scanner scanner = new Scanner(Motor.C, new OpticalDistanceSensor(
-                SensorPort.S1));
-        Pose startPose = new Pose(x, y, heading);
-        pose = new MCLPoseProvider(startPose,  m_pilot, scanner, map, 1, 0);
-
-        m_controller = new ArcPoseController(m_pilot, pose);
+        m_poser = new DeadReckonerPoseProvider(m_pilot);
+        m_poser.setPosition(new Point(22,18));
+        m_controller = new ArcPoseController(m_pilot, m_poser);
 
     }
 
@@ -103,31 +83,14 @@ class RobotController implements NavigationControls {
      * @return
      */
     public Pose getPose() {
-        return pose.getPose();
-    }
-
-    public LineMap getMap() {
-        return map;
+        return m_poser.getPose();
     }
 
     /**
-     * Testing
-     * @param args
+     * Return the map
+     * @return
      */
-    public static void main(String[] args) throws InterruptedException {
-        RobotController c = new RobotController(210, 30, 90);
-        MCLParticleSet set = c.pose.getParticles();
-        set.setDebug(true);
-
-
-
-        System.out.println("Pose:(" + (int) c.pose.getPose().getX()
-                            + "," + (int) c.pose.getPose().getY() + ")");
-        Button.waitForPress();
-
-        c.m_controller.goTo(190, 30);
-        System.out.println("Pose:(" + (int) c.pose.getPose().getX()
-                            + "," + (int) c.pose.getPose().getY() + ")");
-        Button.waitForPress();
+    public Line[] getLines(){
+        return map.getLines();
     }
 }

@@ -5,6 +5,7 @@ import lejos.robotics.*;
 import lejos.robotics.mapping.RangeMap;
 import lejos.robotics.Movement;
 import lejos.geom.*;
+import lejos.nxt.Button;
 
 /*
  * WARNING: THIS CLASS IS SHARED BETWEEN THE classes AND pccomms PROJECTS.
@@ -76,13 +77,15 @@ public class MCLParticle {
     weight = 1;
     Pose tempPose = new Pose();
     tempPose.setLocation(pose.getLocation());
-    for (int i = 0; i < rr.getNumReadings(); i++) {
+
+   //   System.out.println("\n-------------------------------------------\nParticle: (" + pose.getX() + ", " + pose.getY());
+    for (int i = 0; i < rr.size(); i++) {
       float angle = rr.getAngle(i);
       tempPose.setHeading(pose.getHeading() + angle);      
       float robotReading = rr.getRange(i);
 
-      // TODO added
-      if (robotReading >= 90)
+      /*  10cm < valid sensor value < 80 */
+      if (robotReading >= 80 || robotReading <= 10)
           continue;
       
       float range = map.range(tempPose);
@@ -93,8 +96,13 @@ public class MCLParticle {
 
       float diff = robotReading - range;
       weight *= (float) Math.exp (-(diff * diff) / divisor);
-      if (debug) System.out.println("Weight:"+weight);
+
+//      // TODO remove debug
+//      System.out.println("\n\t--------------------\n\tAngle: " + angle + "\n\tRobot Reading: "
+//                         + robotReading + "\n\tRange: " + range + "\n\tDiff: " + diff
+//                         + "\n\tWeight: " + weight + "\n\t--------------------");
     }
+ //     System.out.println("\n-------------------------------------------\n");
   }
 
   /**

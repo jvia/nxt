@@ -3,7 +3,6 @@ package localization;
 import java.awt.Rectangle;
 import lejos.geom.*;
 import java.io.*;
-import lejos.nxt.Button;
 import lejos.robotics.*;
 import lejos.robotics.mapping.RangeMap;
 import lejos.robotics.Movement;
@@ -89,8 +88,8 @@ public class MCLParticleSet {
      */
     private MCLParticle generateParticle() {
         float x, y, angle;
-        Rectangle innerRect = new Rectangle(boundingRect.x + border, boundingRect.y
-                                                                     + border,
+        Rectangle innerRect = new Rectangle(boundingRect.x + border, 
+                                            boundingRect.y + border,
                                             boundingRect.width - border * 2,
                                             boundingRect.height - border * 2);
 
@@ -177,7 +176,6 @@ public class MCLParticleSet {
 
                     // TODO remove debug
                     System.out.println("Completely lost");
-                    Button.waitForPress();
 
                     for (int i = 0; i < numParticles; i++) {
                         particles[i] = generateParticle();
@@ -257,6 +255,7 @@ public class MCLParticleSet {
                 maxWeight = weight;
             }
         }
+        System.out.println("Max weight:" + maxWeight);
     }
 
     public void printMaxWeight() {

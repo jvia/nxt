@@ -15,6 +15,7 @@ public class MCLPoseProvider implements PoseProvider, MoveListener {
     private RangeScanner scanner;
     private RangeMap map;
     private boolean readingsRequired = true;
+    private boolean lost = true;
 
     public MCLPoseProvider(MovementProvider mp, RangeScanner scanner,
                            RangeMap map, int numParticles, int border) {
@@ -48,17 +49,17 @@ public class MCLPoseProvider implements PoseProvider, MoveListener {
         if (readingsRequired) {
             RangeReadings rr = scanner.getRangeValues();
             readingsRequired = false;
-
-            ///// TODO remove debug
-            System.out.println("Complete:"+!rr.incomplete());
-            ///////
+          //  System.out.println("MCLPoseProvider.getPose() rr size: " + rr.size());
             
             if (!rr.incomplete()) {
-                System.out.println("here");
                 particles.calculateWeights(rr, map);
-                particles.resample(); // Cannot indicate robot is lost
+                lost = particles.resample(); // Cannot indicate robot is lost
             }
         }
         return particles.getEstimatedPose();
+    }
+
+    public boolean isLost(){
+        return lost;
     }
 }

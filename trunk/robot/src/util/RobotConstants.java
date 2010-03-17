@@ -26,5 +26,6 @@ public class RobotConstants
 
     public static final Motor leftMotor = Motor.B;
     public static final Motor rightMotor = Motor.A;
+    public static final float OD_SENSOR_MAX_RANGE = 90;
 
 }
