@@ -255,7 +255,6 @@ public class MCLParticleSet {
                 maxWeight = weight;
             }
         }
-        System.out.println("Max weight:" + maxWeight);
     }
 
     public void printMaxWeight() {

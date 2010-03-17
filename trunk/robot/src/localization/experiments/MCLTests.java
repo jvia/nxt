@@ -91,8 +91,9 @@
 //        LineMap map = new LineMap(lines, new Rectangle((int) width,
 //                                                       (int) height));
 //
-//        Scanner scanner = new Scanner(Motor.C, new OpticalDistanceSensor(
-//                SensorPort.S1));
+//        Scanner scanner = new Scanner(Motor.C,
+//                                      new UltrasonicSensor(SensorPort.S1),
+//                                      3);
 //        MCLPoseProvider poseProvider = new MCLPoseProvider(pilot,
 //                                                           scanner,
 //                                                           map,

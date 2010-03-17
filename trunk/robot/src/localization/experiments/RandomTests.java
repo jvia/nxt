@@ -13,10 +13,10 @@ import lejos.nxt.UltrasonicSensor;
 public class RandomTests
 {
     public static void main(String[] args) {
-        UltrasonicSensor us = new UltrasonicSensor(SensorPort.S3);
+        UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
         while (true)
         {
-            System.out.println(us.getDistance());
+            System.out.println(us.getRange());
         }
     }
 
