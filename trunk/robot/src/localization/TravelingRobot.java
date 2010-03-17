@@ -11,13 +11,12 @@ import java.util.Collection;
 import lejos.geom.Line;
 import lejos.geom.Point;
 import lejos.nxt.Button;
+import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
 import lejos.nxt.comm.RConsole;
 import lejos.robotics.Pose;
-import lejos.robotics.RangeReading;
 import lejos.robotics.RangeReadings;
-import lejos.robotics.RangeScanner;
 import lejos.robotics.mapping.RangeMap;
 import lejos.robotics.proposal.ArcPoseController;
 import lejos.robotics.proposal.DestinationUnreachableException;
@@ -48,7 +47,7 @@ public class TravelingRobot {
     private ArcPoseController poseController;
     private RangeReadings readings;
     private Pose start;
-    private float MAX_DISTANCE = 10f;
+    private float MAX_DISTANCE = 50f;
     private float BORDER = 0f;
     private float PROJECTION = 12f;
 
@@ -63,8 +62,8 @@ public class TravelingRobot {
         pilot = new DifferentialPilot(
                 RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
                 RobotConstants.leftMotor, RobotConstants.rightMotor, true);
-        Scanner scanner = new Scanner(pilot, sensor, 3);
-        mcl = new MCLPoseProvider(pilot, scanner, map, 200, 0);
+        Scanner scanner = new Scanner(Motor.C, sensor);
+        mcl = new MCLPoseProvider(pilot, scanner, map, 300, 0);
         set = mcl.getParticles();
     }
 
@@ -109,7 +108,7 @@ public class TravelingRobot {
     }
 
     private void move() {
-        float angle = (float) Math.random() * 360;
+        float angle = (float) (-180+Math.random() * 360);
         float distance = (float) Math.random() * MAX_DISTANCE;
 
         pilot.travel(distance, true);
