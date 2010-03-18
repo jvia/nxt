@@ -111,7 +111,8 @@ public class TravelingRobot {
         while (true) {
             Pose currentPose = mcl.getPose();
             if (withinErrorThreshold(currentPose)) {
-                System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.getY() + ")");
+                System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.
+                        getY() + ")");
                 return currentPose;
             }
             else
@@ -120,11 +121,13 @@ public class TravelingRobot {
     }
 
     public void goTo(Point goal) {
+        Pose goalPose = new Pose(goal.x, goal.y, 0);
         try {
             PathFinder pathFinder =
                        new MapPathFinder(map, readings);
             Pose startPose = localize();
-            Collection<WayPoint> route = pathFinder.findRoute(startPose, goal);
+            Collection<WayPoint> route = pathFinder.findRoute(startPose,
+                                                              goalPose);
             for (WayPoint point : route) {
                 System.out.println("GO TO: (" + point.x + ", " + point.y + ")");
                 poseController.goTo(point);
@@ -159,34 +162,68 @@ public class TravelingRobot {
         RConsole.openBluetooth(60000);
         System.setOut(new PrintStream(RConsole.openOutputStream()));
 
-        float width = 119f;
-        float height = 61f;
+        float width = 487f;
+        float height = 240f;
 
         Line[] lines = new Line[]{
-            // world outline
-            new Line(0f, 0f, 0f, height),
+            //world outline
             new Line(0f, 0f, width, 0f),
-            new Line(0f, height, width, height),
-            new Line(width, 0f, width, height),
-            // document box
-            new Line(0f, 36f, 32.5f, 36f),
-            new Line(32.5f, 36f, 32.5f, height),
-            // brown box
-            new Line(102.5f, 38f, width, 38f),
-            new Line(102.5f, 38f, 102.5f, height)
+            new Line(0f, 0f, 0f, 240.4f),
+            new Line(width, 0f, width, 240.4f),
+            new Line(0f, 240.4f, width, 240.4f),
+            //captain america
+            new Line(73.4f, 104.7f, 135f, 104.7f),
+            new Line(73.4f, 104.7f, 73.4f, 41.6f),
+            new Line(73.4f, 41.6f, 135f, 41.6f),
+            new Line(135f, 104.7f, 135f, 41.6f),
+            //basil
+            new Line(64.4f, 193f, 188.6f, 193f),
+            new Line(64.4f, 193f, 64.4f, 153f),
+            new Line(64.4f, 153f, 188.6f, 153f),
+            new Line(188.6f, 193f, 188.6f, 153f),
+            //obi wan
+            new Line(234.4f, 218.3f, 254.5f, 218.3f),
+            new Line(254.5f, 218.3f, 254.5f, 240.4f),
+            new Line(234.4f, 218.3f, 234.4f, 240.4f),
+            //gromit
+            new Line(282f, 137f, 305.5f, 137f),
+            new Line(305.5f, 137f, 305.5f, 156.5f),
+            new Line(305.5f, 156.5f, 282f, 156.5f),
+            new Line(282f, 156.5f, 282f, 137f),
+            //preston
+            new Line(333.5f, 180f, 377f, 180f),
+            new Line(377f, 180f, 377f, 240.4f),
+            new Line(333.5f, 180f, 333.5f, 240.4f),
+            new Line(360f, 83.5f, 403.5f, 83.5f),
+            //jaffa
+            new Line(360.5f, 83.5f, 403.5f, 83.5f),
+            new Line(403.5f, 83.5f, 403.5f, 123.5f),
+            new Line(403.5f, 123.5f, 360.5f, 123.5f),
+            new Line(360.5f, 123.5f, 360.5f, 83.5f),
+            //wallace
+            new Line(420.5f, 157, 444f, 157f),
+            new Line(444f, 157f, 444f, 196.5f),
+            new Line(444f, 196.5f, 420.5f, 196.5f),
+            new Line(420.5f, 196.5f, 420.5f, 157f),
+            //tinky-winky
+            new Line(234.5f, 0, 234.5f, 21.5f),
+            new Line(234.5f, 21.5f, 244f, 21.5f),
+            new Line(244f, 21.5f, 244f, 64f),
+            new Line(244f, 64f, 305f, 64f),
+            new Line(305f, 64f, 305f, 42f),
+            new Line(305f, 42f, 346.5f, 42f),
+            new Line(346.5f, 42f, 346.5f, 0f),
+            //gandalf
+            new Line(width, 21.5f, width - 20.5f, 21.5f),
+            new Line(width - 20.5f, 21.5f, width - 20.5f, 0f)
         };
 
+        LineMap map = new LineMap(lines, new Rectangle((int) width,
+                                                       (int) height));
         ArrayList<Point> colors = new ArrayList<Point>();
         colors.add(new Point(60, 30));
-
-
-        Rectangle bound = new Rectangle(0, 0, (int) width, (int) height);
-        RangeMap map = new LineMap(lines, bound);
-
-        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(61, 11,
-                                                                        0));
+        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(157, 28, 0));
         robot.goTo(new Point(84, 26));
-
         RConsole.close();
     }
 }

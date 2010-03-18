@@ -66,12 +66,13 @@ public class MCLParticleSet {
         for (int i = 0; i < numParticles; i++) {
             particles[i] = new MCLParticle(start);
         }
-        resetEstimate();
-
-        minX = start.getX()-1;
-        minY = start.getY()-1;
-        maxX = start.getX()+1;
-        maxY = start.getY()+1;
+        estimatedX = start.getX();
+        estimatedY = start.getY();
+        estimatedAngle = start.getHeading();
+        minX = start.getX() - 1;
+        minY = start.getY() - 1;
+        maxX = start.getX() + 1;
+        maxY = start.getY() + 1;
     }
 
     /**
