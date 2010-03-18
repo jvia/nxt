@@ -63,16 +63,19 @@ public class MCLParticleSet {
         this.border = border;
         boundingRect = map.getBoundingRect();
         particles = new MCLParticle[numParticles];
-        for (int i = 0; i < numParticles; i++) {
+        for (int i = 0; i < numParticles / 2; i++) {
             particles[i] = new MCLParticle(start);
+            if (i > 0)
+            particles[i].applyMove(new Movement(Movement.MovementType.TRAVEL, 2, (float) (-180 + Math.random() * 360), false), distanceNoiseFactor, angleNoiseFactor);
         }
-        estimatedX = start.getX();
-        estimatedY = start.getY();
-        estimatedAngle = start.getHeading();
-        minX = start.getX() - 1;
-        minY = start.getY() - 1;
-        maxX = start.getX() + 1;
-        maxY = start.getY() + 1;
+        resetEstimate();
+//        estimatedX = start.getX();
+//        estimatedY = start.getY();
+//        estimatedAngle = start.getHeading();
+//        minX = start.getX() - 1;
+//        minY = start.getY() - 1;
+//        maxX = start.getX() + 1;
+//        maxY = start.getY() + 1;
     }
 
     /**

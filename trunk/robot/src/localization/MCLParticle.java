@@ -84,7 +84,7 @@ public class MCLParticle {
             float robotReading = rr.getRange(i);
 
             /*  10cm < valid sensor value < 80 */
-            if (robotReading >= 150 || robotReading <= 10)
+            if (robotReading >= 80 || robotReading <= 10)
                 continue;
 
             float range = map.range(tempPose);

@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import lejos.geom.Line;
 import lejos.geom.Point;
+import lejos.nxt.Button;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
-import lejos.nxt.UltrasonicSensor;
+import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.nxt.comm.RConsole;
 import lejos.robotics.Pose;
 import lejos.robotics.RangeReadings;
@@ -21,7 +22,6 @@ import lejos.robotics.mapping.RangeMap;
 import lejos.robotics.proposal.ArcPoseController;
 import lejos.robotics.proposal.DestinationUnreachableException;
 import lejos.robotics.proposal.DifferentialPilot;
-import lejos.robotics.proposal.MapPathFinder;
 import lejos.robotics.proposal.PathFinder;
 import lejos.robotics.proposal.WayPoint;
 import util.RobotConstants;
@@ -39,7 +39,7 @@ public class TravelingRobot {
     private RangeMap map;
     private ArrayList<Point> colorsToVisit;
     // our sense of it
-    private UltrasonicSensor sensor;
+    private OpticalDistanceSensor sensor;
     // our way to move within it
     private DifferentialPilot pilot;
     private MCLParticleSet set;
@@ -47,7 +47,7 @@ public class TravelingRobot {
     private ArcPoseController poseController;
     private RangeReadings readings;
     private Pose start;
-    private float MAX_DISTANCE = 10f;
+    private float MAX_DISTANCE = 40f;
 
     public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor*/,
                           ArrayList<Point> colorsToVisit, Pose start) {
@@ -56,13 +56,10 @@ public class TravelingRobot {
         this.colorsToVisit = colorsToVisit;
         this.start = start;
 
-        sensor = new UltrasonicSensor(SensorPort.S1);
-        pilot = new DifferentialPilot(
-                RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH
-                                                    / 10,
-                RobotConstants.leftMotor, RobotConstants.rightMotor, true);
+        sensor = new OpticalDistanceSensor(SensorPort.S1);
+        pilot = new DifferentialPilot( RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
+                                       RobotConstants.leftMotor, RobotConstants.rightMotor, true);
         Scanner scanner = new Scanner(Motor.C, sensor);
-        start = new Pose(30, 20, 0);
         mcl = new MCLPoseProvider(pilot, scanner, map, 200, 0);
         set = mcl.getParticles();
     }
@@ -100,8 +97,7 @@ public class TravelingRobot {
         int width = set.getErrorRect().width;
         int height = set.getErrorRect().height;
         System.out.println((int) pose.getX() + "," + (int) pose.getY()
-                           + "\t\t\t" + width + "," + height + " \t\t\t" + set.
-                getMaxWeight());
+                           + "\t\t\t" + width + "," + height + " \t\t\t" + set.getMaxWeight());
 
         return width < ERROR_THRESHOLD && height < ERROR_THRESHOLD;
     }
@@ -111,8 +107,7 @@ public class TravelingRobot {
         while (true) {
             Pose currentPose = mcl.getPose();
             if (withinErrorThreshold(currentPose)) {
-                System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.
-                        getY() + ")");
+                System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.getY() + ")");
                 return currentPose;
             }
             else
@@ -121,32 +116,39 @@ public class TravelingRobot {
     }
 
     public void goTo(Point goal) {
-        Pose goalPose = new Pose(goal.x, goal.y, 0);
-        try {
-            PathFinder pathFinder =
-                       new MapPathFinder(map, readings);
-            Pose startPose = localize();
-            Collection<WayPoint> route = pathFinder.findRoute(startPose,
-                                                              goalPose);
-            for (WayPoint point : route) {
-                System.out.println("GO TO: (" + point.x + ", " + point.y + ")");
-                poseController.goTo(point);
-            }
-        }
-        catch (DestinationUnreachableException ex) {
-            Sound.twoBeeps();
-            System.out.println("Unreachable location");
-            System.exit(1);
-        }
+       // Pose goalPose = new Pose(goal.x, goal.y, 0);
+        Pose pose = localize();
+        Sound.twoBeeps();
+        Button.waitForPress();
+        poseController.goTo(goal);
+//
+//        try {
+//            PathFinder pathFinder =
+//                       new MapPathFinder(map, readings);
+//            Pose startPose = localize();
+//            Collection<WayPoint> route = pathFinder.findRoute(startPose,
+//                                                              goalPose);
+//            for (WayPoint point : route) {
+//                System.out.println("GO TO: (" + point.x + ", " + point.y + ")");
+//                poseController.goTo(point);
+//            }
+//        }
+//        catch (DestinationUnreachableException ex) {
+//            Sound.twoBeeps();
+//            System.out.println("Unreachable location");
+//            System.exit(1);
+//        }
     }
 
     private void move() {
-        float angle = (float) (-180 + Math.random() * 360);
+        float angle = (float) (Math.random() * 360);
+        while (angle > 180)
+            angle -= 360;
         float distance = (float) Math.random() * MAX_DISTANCE;
 
         pilot.travel(distance, true);
         while (pilot.isMoving())
-            if (sensor.getRange() < 20)
+            if (sensor.getDistance() < 30)
                 pilot.stop();
 
         pilot.rotate(angle);
@@ -218,8 +220,7 @@ public class TravelingRobot {
             new Line(width - 20.5f, 21.5f, width - 20.5f, 0f)
         };
 
-        LineMap map = new LineMap(lines, new Rectangle((int) width,
-                                                       (int) height));
+        LineMap map = new LineMap(lines, new Rectangle((int) width, (int) height));
         ArrayList<Point> colors = new ArrayList<Point>();
         colors.add(new Point(60, 30));
         TravelingRobot robot = new TravelingRobot(map, colors, new Pose(157, 28, 0));
