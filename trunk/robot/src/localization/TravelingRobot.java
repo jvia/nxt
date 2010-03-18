@@ -14,6 +14,7 @@ import lejos.nxt.Button;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
+import lejos.nxt.addon.ColorSensor;
 import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.nxt.comm.RConsole;
 import lejos.robotics.Pose;
@@ -35,6 +36,7 @@ public class TravelingRobot {
 
     private static float MAX_READING = 150;
     private static final int ERROR_THRESHOLD = 10;
+    private static ColorSensor colorSensor;
     // the world
     private RangeMap map;
     private ArrayList<Point> colorsToVisit;
@@ -47,7 +49,7 @@ public class TravelingRobot {
     private ArcPoseController poseController;
     private RangeReadings readings;
     private Pose start;
-    private float MAX_DISTANCE = 40f;
+    private float MAX_DISTANCE = 100f;
 
     public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor*/,
                           ArrayList<Point> colorsToVisit, Pose start) {
@@ -57,11 +59,13 @@ public class TravelingRobot {
         this.start = start;
 
         sensor = new OpticalDistanceSensor(SensorPort.S1);
-        pilot = new DifferentialPilot( RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
-                                       RobotConstants.leftMotor, RobotConstants.rightMotor, true);
+        pilot = new DifferentialPilot(RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
+                                      RobotConstants.leftMotor, RobotConstants.rightMotor, true);
         Scanner scanner = new Scanner(Motor.C, sensor);
         mcl = new MCLPoseProvider(pilot, scanner, map, 200, 0);
         set = mcl.getParticles();
+        poseController = new ArcPoseController(pilot, mcl);
+        colorSensor = new ColorSensor(SensorPort.S2);
     }
 
     public void visitPoints() throws DestinationUnreachableException {
@@ -116,7 +120,7 @@ public class TravelingRobot {
     }
 
     public void goTo(Point goal) {
-       // Pose goalPose = new Pose(goal.x, goal.y, 0);
+        // Pose goalPose = new Pose(goal.x, goal.y, 0);
         Pose pose = localize();
         Sound.twoBeeps();
         Button.waitForPress();
@@ -224,7 +228,14 @@ public class TravelingRobot {
         ArrayList<Point> colors = new ArrayList<Point>();
         colors.add(new Point(60, 30));
         TravelingRobot robot = new TravelingRobot(map, colors, new Pose(157, 28, 0));
-        robot.goTo(new Point(84, 26));
+
+        while (robot.colorSensor.getColorNumber() != 9){
+         robot.goTo(new Point(244, 116));
+        }
+//        System.out.println("Pre Go-To");
+//        robot.poseController.goTo(10, 10);
+//        System.out.println("Post Go-To");
+
         RConsole.close();
     }
 }

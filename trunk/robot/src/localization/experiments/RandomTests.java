@@ -7,6 +7,8 @@ package localization.experiments;
 import java.io.PrintStream;
 import lejos.nxt.Button;
 import lejos.nxt.SensorPort;
+import lejos.nxt.SensorPortListener;
+import lejos.nxt.addon.ColorSensor;
 import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.nxt.comm.RConsole;
 import lejos.robotics.proposal.DifferentialPilot;
@@ -25,12 +27,20 @@ public class RandomTests
                 RobotConstants.leftMotor,
                 RobotConstants.rightMotor,
                 true);
+        final ColorSensor s = new ColorSensor(SensorPort.S2);
+
+        SensorPort.S2.addSensorPortListener(new SensorPortListener() {
+
+            public void stateChanged(SensorPort aSource, int aOldValue, int aNewValue) {
+                if (s.getColorNumber() == 9)
+                    System.out.println("Red!");
+            }
+        });
 
         RConsole.openBluetooth(60000);
         System.setOut(new PrintStream(RConsole.openOutputStream()));
         while (!Button.ENTER.isPressed())
         {
-            System.out.println(us.getDistance());
             Thread.sleep(300);
         }
     }
