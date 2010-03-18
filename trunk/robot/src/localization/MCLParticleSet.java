@@ -58,8 +58,13 @@ public class MCLParticleSet {
     }
 
     public MCLParticleSet(Pose start, RangeMap map, int numParticles, int border) {
-        this (map, numParticles, border);
-        particles[0] = new MCLParticle(start);
+        this(map, numParticles, border);
+        for (int i = 0; i < particles.length; i++){
+            particles[i] = new MCLParticle(start);
+       // Movement move = new Movement(Movement.MovementType.ROTATE, 1, 1, false);
+      //  particles[i].applyMove(move, distanceNoiseFactor, angleNoiseFactor);
+        }
+
     }
 
     /**
@@ -69,7 +74,7 @@ public class MCLParticleSet {
      */
     private MCLParticle generateParticle() {
         float x, y, angle;
-        Rectangle innerRect = new Rectangle(boundingRect.x + border, 
+        Rectangle innerRect = new Rectangle(boundingRect.x + border,
                                             boundingRect.y + border,
                                             boundingRect.width - border * 2,
                                             boundingRect.height - border * 2);

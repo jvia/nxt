@@ -1,4 +1,4 @@
-package localization;
+package navigation;
 
 import lejos.geom.Point;
 import lejos.robotics.MoveListener;

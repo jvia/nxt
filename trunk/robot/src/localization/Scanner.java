@@ -37,7 +37,7 @@ public class Scanner implements RangeScanner {
     public Scanner(Motor turret, UltrasonicSensor sensor) {
         this.turret = turret;
         this.turret.smoothAcceleration(true);
-        readings = new RangeReadings(6);
+        readings = new RangeReadings(3);
         this.sensor = sensor;
     }
 
@@ -56,12 +56,28 @@ public class Scanner implements RangeScanner {
     public RangeReadings getRangeValues() {
         float distance = distance = sensor.getRange();
 
-        for (int angle = -180 + (360 / readings.size()), i = 0; i < 6; angle += (360 / readings.size()), i++) {
-            turret.rotateTo(angle);
-            distance = sensor.getRange();
-            distance = (distance >= 150) ? -1 : distance;
-            readings.setRange(i, angle, distance);
-        }
+        turret.rotateTo(-45);
+        distance = sensor.getRange();
+        distance = (distance >= 150)? -1 : distance;
+        readings.setRange(0, -45, distance);
+
+        turret.rotateTo(0);
+        distance = sensor.getRange();
+        distance = (distance >= 150)? -1 : distance;
+        readings.setRange(1, 0, distance);
+
+        turret.rotateTo(45);
+        distance = sensor.getRange();
+        distance = (distance >= 150)? -1 : distance;
+        readings.setRange(2, 45, distance);
+
+
+//        for (int angle = -180 + (360 / readings.size()), i = 0; i < 6; angle += (360 / readings.size()), i++) {
+//            turret.rotateTo(angle);
+//            distance = sensor.getRange();
+//            distance = (distance >= 150) ? -1 : distance;
+//            readings.setRange(i, angle, distance);
+//        }
 
         turret.rotateTo(0);
 
