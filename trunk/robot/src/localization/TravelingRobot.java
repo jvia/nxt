@@ -34,7 +34,7 @@ public class TravelingRobot {
     // static varibles
 
     private static float MAX_READING = 150;
-    private static final int ERROR_THRESHOLD = 2;
+    private static final int ERROR_THRESHOLD = 10;
     // the world
     private RangeMap map;
     private ArrayList<Point> colorsToVisit;
@@ -50,11 +50,11 @@ public class TravelingRobot {
     private float MAX_DISTANCE = 10f;
 
     public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor*/,
-                          ArrayList<Point> colorsToVisit/*, Pose start*/) {
+                          ArrayList<Point> colorsToVisit, Pose start) {
 //        this.map = map;
 //        this.sensor = sensor;
         this.colorsToVisit = colorsToVisit;
-//        this.start = start;
+        this.start = start;
 
         sensor = new UltrasonicSensor(SensorPort.S1);
         pilot = new DifferentialPilot(
@@ -77,11 +77,12 @@ public class TravelingRobot {
 
             for (WayPoint nextStop : route) {
                 System.out.println("Heading to (" + nextStop.x
-                                                    + ", "+ nextStop.y + ")");
+                                   + ", " + nextStop.y + ")");
                 poseController.goTo(nextStop);
             }
 
-            if (mcl.getPose().getX() == color.x && mcl.getPose().getY() == color.y)
+            if (mcl.getPose().getX() == color.x && mcl.getPose().getY()
+                                                   == color.y)
                 Sound.twoBeeps();
         }
     }
@@ -93,6 +94,9 @@ public class TravelingRobot {
      * @return
      */
     private boolean withinErrorThreshold(Pose pose) {
+//        for (int p = 0; p < set.numParticles(); p++){
+//
+//        }
         int width = set.getErrorRect().width;
         int height = set.getErrorRect().height;
         System.out.println((int) pose.getX() + "," + (int) pose.getY()
@@ -103,12 +107,33 @@ public class TravelingRobot {
     }
 
     public Pose localize() {
+        System.out.println("--- At ---\t\t--- Error ---\t\t--- Weight ---");
         while (true) {
             Pose currentPose = mcl.getPose();
-            if (withinErrorThreshold(currentPose))
+            if (withinErrorThreshold(currentPose)) {
+                System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.getY() + ")");
                 return currentPose;
+            }
             else
                 move();
+        }
+    }
+
+    public void goTo(Point goal) {
+        try {
+            PathFinder pathFinder =
+                       new MapPathFinder(map, readings);
+            Pose startPose = localize();
+            Collection<WayPoint> route = pathFinder.findRoute(startPose, goal);
+            for (WayPoint point : route) {
+                System.out.println("GO TO: (" + point.x + ", " + point.y + ")");
+                poseController.goTo(point);
+            }
+        }
+        catch (DestinationUnreachableException ex) {
+            Sound.twoBeeps();
+            System.out.println("Unreachable location");
+            System.exit(1);
         }
     }
 
@@ -129,7 +154,8 @@ public class TravelingRobot {
 
     }
 
-    public static void main(String[] args) throws DestinationUnreachableException {
+    public static void main(String[] args) throws
+            DestinationUnreachableException {
         RConsole.openBluetooth(60000);
         System.setOut(new PrintStream(RConsole.openOutputStream()));
 
@@ -157,11 +183,10 @@ public class TravelingRobot {
         Rectangle bound = new Rectangle(0, 0, (int) width, (int) height);
         RangeMap map = new LineMap(lines, bound);
 
-        TravelingRobot robot = new TravelingRobot(map, colors);
+        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(61, 11,
+                                                                        0));
+        robot.goTo(new Point(84, 26));
 
-        System.out.println("--- At ---\t\t--- Error ---\t\t--- Weight ---");
-        Pose pose = robot.localize();
-        System.out.println("\nAt: (" + pose.getX() + ", " + pose.getY() + ")");
         RConsole.close();
     }
 }

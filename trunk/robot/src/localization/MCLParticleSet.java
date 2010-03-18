@@ -58,13 +58,20 @@ public class MCLParticleSet {
     }
 
     public MCLParticleSet(Pose start, RangeMap map, int numParticles, int border) {
-        this(map, numParticles, border);
-        for (int i = 0; i < particles.length; i++){
+        this.map = map;
+        this.numParticles = numParticles;
+        this.border = border;
+        boundingRect = map.getBoundingRect();
+        particles = new MCLParticle[numParticles];
+        for (int i = 0; i < numParticles; i++) {
             particles[i] = new MCLParticle(start);
-       // Movement move = new Movement(Movement.MovementType.ROTATE, 1, 1, false);
-      //  particles[i].applyMove(move, distanceNoiseFactor, angleNoiseFactor);
         }
+        resetEstimate();
 
+        minX = start.getX()-1;
+        minY = start.getY()-1;
+        maxX = start.getX()+1;
+        maxY = start.getY()+1;
     }
 
     /**
