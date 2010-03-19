@@ -63,11 +63,16 @@ public class MCLParticleSet {
         this.border = border;
         boundingRect = map.getBoundingRect();
         particles = new MCLParticle[numParticles];
-        for (int i = 0; i < numParticles / 2; i++) {
+        for (int i = 0; i < numParticles; i++) {
             particles[i] = new MCLParticle(start);
-            if (i > 0)
-            particles[i].applyMove(new Movement(Movement.MovementType.TRAVEL, 2, (float) (-180 + Math.random() * 360), false), distanceNoiseFactor, angleNoiseFactor);
+//            if (i > numParticles - (numParticles/4))
+//                particles[i].applyMove(new Movement(Movement.MovementType.TRAVEL, 2,
+//                                      (float) (-180 + Math.random() * 360), false),
+//                                       distanceNoiseFactor, angleNoiseFactor);
         }
+
+        for (int i = numParticles-1; i > numParticles-10; i--)
+            particles[i] = generateParticle();
         resetEstimate();
 //        estimatedX = start.getX();
 //        estimatedY = start.getY();
@@ -163,8 +168,7 @@ public class MCLParticleSet {
 
                 if (count > 0) { // Duplicate the ones we have so far
                     for (int i = count; i < numParticles; i++) {
-                        particles[i] = new MCLParticle(particles[i % count].
-                                getPose());
+                        particles[i] = new MCLParticle(particles[i % count].getPose());
                         particles[i].setWeight(particles[i % count].getWeight());
                     }
                     return false;
@@ -411,8 +415,7 @@ public class MCLParticleSet {
         int index = -1;
         for (int i = 0; i < numParticles; i++) {
             Pose pose = particles[i].getPose();
-            float distance = (float) Math.sqrt((double) ((pose.getX() - x) * (pose.
-                    getX() - x)) + ((pose.getY() - y) * (pose.getY() - y)));
+            float distance = (float) Math.sqrt((double) ((pose.getX() - x) * (pose.getX() - x)) + ((pose.getY() - y) * (pose.getY() - y)));
             if (distance < minDistance) {
                 minDistance = distance;
                 index = i;

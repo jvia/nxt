@@ -14,6 +14,7 @@ import lejos.nxt.Button;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
+import lejos.nxt.UltrasonicSensor;
 import lejos.nxt.addon.ColorSensor;
 import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.nxt.comm.RConsole;
@@ -50,6 +51,7 @@ public class TravelingRobot {
     private RangeReadings readings;
     private Pose start;
     private float MAX_DISTANCE = 100f;
+    private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
 
     public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor*/,
                           ArrayList<Point> colorsToVisit, Pose start) {
@@ -62,10 +64,11 @@ public class TravelingRobot {
         pilot = new DifferentialPilot(RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
                                       RobotConstants.leftMotor, RobotConstants.rightMotor, true);
         Scanner scanner = new Scanner(Motor.C, sensor);
-        mcl = new MCLPoseProvider(pilot, scanner, map, 200, 0);
+
+        mcl = new MCLPoseProvider(start, pilot, scanner, map, 100, 0);
         set = mcl.getParticles();
         poseController = new ArcPoseController(pilot, mcl);
-        colorSensor = new ColorSensor(SensorPort.S2);
+        //   colorSensor = new ColorSensor(SensorPort.S2);
     }
 
     public void visitPoints() throws DestinationUnreachableException {
@@ -148,14 +151,13 @@ public class TravelingRobot {
         float angle = (float) (Math.random() * 360);
         while (angle > 180)
             angle -= 360;
-        float distance = (float) Math.random() * MAX_DISTANCE;
+        pilot.rotate(angle);
 
+        float distance = (float) Math.random() * MAX_DISTANCE;
         pilot.travel(distance, true);
         while (pilot.isMoving())
-            if (sensor.getDistance() < 30)
+            if (sensor.getDistance() <= 30 || us.getRange() <= 30)
                 pilot.stop();
-
-        pilot.rotate(angle);
     }
 
     public ArrayList<Point> route(Point start, Point goal) {
@@ -163,8 +165,7 @@ public class TravelingRobot {
 
     }
 
-    public static void main(String[] args) throws
-            DestinationUnreachableException {
+    public static void main(String[] args) throws DestinationUnreachableException {
         RConsole.openBluetooth(60000);
         System.setOut(new PrintStream(RConsole.openOutputStream()));
 
@@ -227,11 +228,17 @@ public class TravelingRobot {
         LineMap map = new LineMap(lines, new Rectangle((int) width, (int) height));
         ArrayList<Point> colors = new ArrayList<Point>();
         colors.add(new Point(60, 30));
-        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(157, 28, 0));
+        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(50, 211, 180));
 
-        while (robot.colorSensor.getColorNumber() != 9){
-         robot.goTo(new Point(244, 116));
-        }
+        robot.localize();
+        robot.move();
+        Pose p = robot.localize();
+        System.out.println("Final Pose: (" + p.getX() + ", " + p.getY() + ", " + p.getHeading() + ")");
+
+
+//        while (robot.colorSensor.getColorNumber() != 9){
+//         robot.goTo(new Point(244, 116));
+//        }
 //        System.out.println("Pre Go-To");
 //        robot.poseController.goTo(10, 10);
 //        System.out.println("Post Go-To");

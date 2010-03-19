@@ -87,14 +87,24 @@ public class MCLParticle {
             if (robotReading >= 80 || robotReading <= 10)
                 continue;
 
+
             float range = map.range(tempPose);
+            
+            // TODO remove debug
+            System.out.println("\tAngle: " + angle + "\tExpect: " + range + "\tActual: " + robotReading);
+
             if (range < 0) {
                 weight = 0;
                 return;
             }
 
+
             float diff = robotReading - range;
             weight *= (float) Math.exp(-(diff * diff) / divisor);
+
+            // TODO remove debug
+            System.out.println("\tParticle:" + pose.getX() + ", " + pose.getY() + "\tWeight: " + weight);
+            System.out.println("");
 
         }
     }
@@ -120,15 +130,13 @@ public class MCLParticle {
      */
     public void applyMove(Movement move, float distanceNoiseFactor,
                           float angleNoiseFactor) {
-        float ym = (move.getDistanceTraveled() * ((float) Math.sin(Math.
-                toRadians(pose.getHeading()))));
-        float xm = (move.getDistanceTraveled() * ((float) Math.cos(Math.
-                toRadians(pose.getHeading()))));
+        float ym = (move.getDistanceTraveled() * ((float) Math.sin(Math.toRadians(pose.getHeading()))));
+        float xm = (move.getDistanceTraveled() * ((float) Math.cos(Math.toRadians(pose.getHeading()))));
 
         pose.setLocation(new Point((float) (pose.getX() + xm + (distanceNoiseFactor * xm * rand.nextGaussian())),
                                    (float) (pose.getY() + ym + (distanceNoiseFactor * ym * rand.nextGaussian()))));
         pose.setHeading((float) (pose.getHeading() + move.getAngleTurned()
-                                + (angleNoiseFactor * move.getAngleTurned() * rand.nextGaussian())));
+                                 + (angleNoiseFactor * move.getAngleTurned() * rand.nextGaussian())));
         pose.setHeading((float) ((int) (pose.getHeading() + 0.5f) % 360));
     }
 

@@ -55,7 +55,6 @@ public class Scanner implements RangeScanner {
         sensor.powerOn();
         float distance;
 
-
         turret.rotateTo(-45);
         distance = sensor.getDistance()/10;
         distance = (distance >= 80) ? -1 : distance;
@@ -70,6 +69,7 @@ public class Scanner implements RangeScanner {
         distance = sensor.getDistance()/10;
         distance = (distance >= 80) ? -1 : distance;
         readings.setRange(2, -45, distance);
+
 
 
 //        for (int angle = -180 + (360 / readings.size()), i = 0; i < 6; angle += (360 / readings.size()), i++) {
