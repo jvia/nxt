@@ -89,9 +89,10 @@ public class MCLParticle {
 
 
             float range = map.range(tempPose);
-            
+
             // TODO remove debug
-            System.out.println("\tAngle: " + angle + "\tExpect: " + range + "\tActual: " + robotReading);
+            if (debug)
+                System.out.println("\tAngle: " + angle + "\tExpect: " + range + "\tActual: " + robotReading);
 
             if (range < 0) {
                 weight = 0;
@@ -103,8 +104,10 @@ public class MCLParticle {
             weight *= (float) Math.exp(-(diff * diff) / divisor);
 
             // TODO remove debug
-            System.out.println("\tParticle:" + pose.getX() + ", " + pose.getY() + "\tWeight: " + weight);
-            System.out.println("");
+            if (debug) {
+                System.out.println("\tParticle:" + pose.getX() + ", " + pose.getY() + "\tWeight: " + weight);
+                System.out.println("");
+            }
 
         }
     }

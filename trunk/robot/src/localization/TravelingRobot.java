@@ -24,7 +24,6 @@ import lejos.robotics.proposal.ArcPoseController;
 import lejos.robotics.proposal.DestinationUnreachableException;
 import lejos.robotics.proposal.DifferentialPilot;
 import lejos.robotics.proposal.WayPoint;
-import navigation.PathFinder;
 import util.RobotConstants;
 
 /**
@@ -51,18 +50,18 @@ public class TravelingRobot {
     private Pose start;
     private float MAX_DISTANCE = 20f;
     private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
+    Scanner scanner;
 
     public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor*/,
                           ArrayList<Point> colorsToVisit, Pose start) {
-//        this.map = map;
-//        this.sensor = sensor;
+        this.map = map;
         this.colorsToVisit = colorsToVisit;
         this.start = start;
 
         sensor = new OpticalDistanceSensor(SensorPort.S1);
         pilot = new DifferentialPilot(RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
                                       RobotConstants.leftMotor, RobotConstants.rightMotor, true);
-        Scanner scanner = new Scanner(Motor.C, sensor);
+        scanner = new Scanner(Motor.C, sensor);
 
         mcl = new MCLPoseProvider(start, pilot, scanner, map, 100, 0);
         set = mcl.getParticles();
@@ -120,25 +119,21 @@ public class TravelingRobot {
     }
 
     public void goTo(Point g) {
+
         Pose goal = new Pose(g.x, g.y, 0);
-
-
         while (colorSensor.getColorNumber() != 9) {
-            Pose p = localize();
-            System.out.println("Final Pose: (" + p.getX() + ", " + p.getY() + ", " + p.getHeading() + ")");
-            poseController.goTo(g);
-//            try {
-//                Pose current = localize();
-//                MapPathFinder pathFinder = new MapPathFinder(map, readings);
-//                Collection<WayPoint> route = pathFinder.findRoute(current, goal);
-//                for (WayPoint p : route) {
-//                    System.out.println("GO TO: (" + p.x + ", " + p.y + ")");
-//                    poseController.goTo(p);
-//                }
-//            }
-//            catch (DestinationUnreachableException ex) {
-//                continue;
-//            }
+            try {
+                Pose current = localize();
+                navigation.MapPathFinder pathFinder = new navigation.MapPathFinder(map, scanner.getRangeValues());
+                Collection<WayPoint> route = pathFinder.findRoute(current, goal);
+                for (WayPoint p : route) {
+                    System.out.println("GO TO: (" + p.x + ", " + p.y + ")");
+                    poseController.goTo(p);
+                }
+            }
+            catch (DestinationUnreachableException ex) {
+                continue;
+            }
         }
     }
 

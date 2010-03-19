@@ -71,8 +71,8 @@ public class MCLParticleSet {
 //                                       distanceNoiseFactor, angleNoiseFactor);
         }
 
-        for (int i = numParticles-1; i > numParticles-10; i--)
-            particles[i] = generateParticle();
+//        for (int i = numParticles-1; i > numParticles-10; i--)
+//            particles[i] = generateParticle();
         resetEstimate();
 //        estimatedX = start.getX();
 //        estimatedY = start.getY();
