@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import lejos.geom.Line;
 import lejos.geom.Point;
-import lejos.nxt.Button;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
@@ -37,7 +36,7 @@ public class TravelingRobot {
 
     private static float MAX_READING = 150;
     private static final int ERROR_THRESHOLD = 10;
-    private static ColorSensor colorSensor;
+    private static ColorSensor colorSensor = new ColorSensor(SensorPort.S3);
     // the world
     private RangeMap map;
     private ArrayList<Point> colorsToVisit;
@@ -122,29 +121,25 @@ public class TravelingRobot {
         }
     }
 
-    public void goTo(Point goal) {
-        // Pose goalPose = new Pose(goal.x, goal.y, 0);
-        Pose pose = localize();
-        Sound.twoBeeps();
-        Button.waitForPress();
-        poseController.goTo(goal);
-//
-//        try {
-//            PathFinder pathFinder =
-//                       new MapPathFinder(map, readings);
-//            Pose startPose = localize();
-//            Collection<WayPoint> route = pathFinder.findRoute(startPose,
-//                                                              goalPose);
-//            for (WayPoint point : route) {
-//                System.out.println("GO TO: (" + point.x + ", " + point.y + ")");
-//                poseController.goTo(point);
+    public void goTo(Point g) {
+        Pose goal = new Pose(g.x, g.y, 0);
+
+        while (colorSensor.getColorNumber() != 9) {
+            Pose current = localize();
+
+//            try {
+//                Pose current = localize();
+//                PathFinder pathFinder = new MapPathFinder(map, readings);
+//                Collection<WayPoint> route = pathFinder.findRoute(current, goal);
+//                for (WayPoint p : route) {
+//                    System.out.println("GO TO: (" + p.x + ", " + p.y + ")");
+//                    poseController.goTo(p);
+//                }
 //            }
-//        }
-//        catch (DestinationUnreachableException ex) {
-//            Sound.twoBeeps();
-//            System.out.println("Unreachable location");
-//            System.exit(1);
-//        }
+//            catch (DestinationUnreachableException ex) {
+//                continue;
+//            }
+        }
     }
 
     private void move() {
@@ -235,13 +230,7 @@ public class TravelingRobot {
         Pose p = robot.localize();
         System.out.println("Final Pose: (" + p.getX() + ", " + p.getY() + ", " + p.getHeading() + ")");
 
-
-//        while (robot.colorSensor.getColorNumber() != 9){
-//         robot.goTo(new Point(244, 116));
-//        }
-//        System.out.println("Pre Go-To");
-//        robot.poseController.goTo(10, 10);
-//        System.out.println("Post Go-To");
+         robot.goTo(new Point(244, 116));
 
         RConsole.close();
     }
