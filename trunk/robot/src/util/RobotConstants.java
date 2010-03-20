@@ -20,7 +20,7 @@ public class RobotConstants
     /**
      * The distance between the center of each wheel in mm.
      */
-    public static final float TRACK_WIDTH = 173f;
+    public static final float TRACK_WIDTH = 115f;
 
     public static final float SINGLE_ROTATION = (float) Math.PI * WHEEL_DIAMETER;
 

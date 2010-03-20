@@ -25,7 +25,7 @@ import lejos.nxt.Button;
  */
 public class MCLParticle {
 
-    private static boolean debug = true;
+    private static boolean debug = false;
     private static Random rand = new Random();
     // Instance variables (kept to minimum to allow maximum number of particles)
     private Pose pose;

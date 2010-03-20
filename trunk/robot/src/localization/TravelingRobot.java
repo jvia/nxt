@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import lejos.geom.Line;
 import lejos.geom.Point;
+import lejos.nxt.Button;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
@@ -35,13 +36,14 @@ public class TravelingRobot {
 
     private static float MAX_READING = 150;
     private static final int ERROR_THRESHOLD = 10;
-    private static ColorSensor colorSensor = new ColorSensor(SensorPort.S3);
     // the world
     private RangeMap map;
     private ArrayList<Point> colorsToVisit;
     // our sense of it
-    private OpticalDistanceSensor sensor;
-    // our way to move within it
+    private OpticalDistanceSensor sensor = new OpticalDistanceSensor(SensorPort.S1);
+    private static ColorSensor colorSensor = new ColorSensor(SensorPort.S3);
+    private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
+    /* our way to move within it */
     private DifferentialPilot pilot;
     private MCLParticleSet set;
     private MCLPoseProvider mcl;
@@ -49,7 +51,6 @@ public class TravelingRobot {
     private RangeReadings readings;
     private Pose start;
     private float MAX_DISTANCE = 20f;
-    private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
     Scanner scanner;
 
     public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor*/,
@@ -58,7 +59,7 @@ public class TravelingRobot {
         this.colorsToVisit = colorsToVisit;
         this.start = start;
 
-        sensor = new OpticalDistanceSensor(SensorPort.S1);
+
         pilot = new DifferentialPilot(RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
                                       RobotConstants.leftMotor, RobotConstants.rightMotor, true);
         scanner = new Scanner(Motor.C, sensor);
@@ -66,7 +67,6 @@ public class TravelingRobot {
         mcl = new MCLPoseProvider(start, pilot, scanner, map, 100, 0);
         set = mcl.getParticles();
         poseController = new ArcPoseController(pilot, mcl);
-        //   colorSensor = new ColorSensor(SensorPort.S2);
     }
 
     public void visitPoints() throws DestinationUnreachableException {
@@ -126,8 +126,10 @@ public class TravelingRobot {
                 Pose current = localize();
                 navigation.MapPathFinder pathFinder = new navigation.MapPathFinder(map, scanner.getRangeValues());
                 Collection<WayPoint> route = pathFinder.findRoute(current, goal);
-                for (WayPoint p : route) {
+                for (WayPoint p : route)
                     System.out.println("GO TO: (" + p.x + ", " + p.y + ")");
+                Button.waitForPress();
+                for (WayPoint p : route) {
                     poseController.goTo(p);
                 }
             }
@@ -144,7 +146,9 @@ public class TravelingRobot {
         pilot.rotate(angle);
 
         float distance = (float) Math.random() * MAX_DISTANCE;
-        pilot.travel(distance, true);
+        if (sensor.getDistance() > distance + 12)
+            pilot.travel(distance, true);
+
         while (pilot.isMoving())
             if (sensor.getDistance() <= 30 || us.getRange() <= 30)
                 pilot.stop();
@@ -225,7 +229,7 @@ public class TravelingRobot {
 //        Pose p = robot.localize();
 //        System.out.println("Final Pose: (" + p.getX() + ", " + p.getY() + ", " + p.getHeading() + ")");
 
-        robot.goTo(new Point(244, 116));
+        robot.goTo(new Point(236, 45));
 
         RConsole.close();
     }

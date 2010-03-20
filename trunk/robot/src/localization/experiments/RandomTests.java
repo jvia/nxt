@@ -28,23 +28,16 @@ public class RandomTests {
                 RobotConstants.leftMotor,
                 RobotConstants.rightMotor,
                 true);
-        final ColorSensor s = new ColorSensor(SensorPort.S2);
+        final ColorSensor s = new ColorSensor(SensorPort.S3);
 
-        SensorPort.S2.addSensorPortListener(new SensorPortListener() {
 
-            public void stateChanged(SensorPort aSource, int aOldValue, int aNewValue) {
-                if (s.getColorNumber() == 9) {
-                    System.out.println("Red!");
-                    pilot.backward();
-                }
-            }
-        });
-
-//        RConsole.openBluetooth(60000);
-//        System.setOut(new PrintStream(RConsole.openOutputStream()));
-        pilot.forward();
+        RConsole.openBluetooth(60000);
+        System.setOut(new PrintStream(RConsole.openOutputStream()));
+     //   pilot.forward();
         while (!Button.ENTER.isPressed()) {
-            continue;
+            System.out.println(s.getColorNumber());
+            Thread.sleep(300);
         }
+        RConsole.close();
     }
 }

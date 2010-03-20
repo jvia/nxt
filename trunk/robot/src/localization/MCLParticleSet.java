@@ -36,7 +36,7 @@ public class MCLParticleSet {
     private int border = 10;	// The minimum distance from the edge of the map
     // to generate a particle.
     private Rectangle boundingRect;
-    private boolean debug = true;
+    private boolean debug = false;
     // TODO ADDED
     private static final float MAX_READING = 90;
 
