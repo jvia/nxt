@@ -31,8 +31,8 @@ public class MapPathFinder extends ArrayList<WayPoint> implements PathFinder {
 
     private static final long serialVersionUID = 1L;
     private static final int MAX_ITERATIONS = 1000;
-    private static final float MAX_DISTANCE = 10;
-    private static final float MIN_GAIN = 5;
+    private static final float MAX_DISTANCE = 40;
+    private static final float MIN_GAIN = 10;
     private static final float MAX_RANGE = 100;
     private static int BORDER = 20;
     private RangeMap map;

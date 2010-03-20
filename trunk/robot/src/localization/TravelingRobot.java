@@ -61,7 +61,7 @@ public class TravelingRobot {
 
 
         pilot = new DifferentialPilot(RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
-                                      RobotConstants.leftMotor, RobotConstants.rightMotor, true);
+                                      RobotConstants.leftMotor, RobotConstants.rightMotor);
         scanner = new Scanner(Motor.C, sensor);
 
         mcl = new MCLPoseProvider(start, pilot, scanner, map, 100, 0);
@@ -94,9 +94,6 @@ public class TravelingRobot {
      * @return
      */
     private boolean withinErrorThreshold(Pose pose) {
-//        for (int p = 0; p < set.numParticles(); p++){
-//
-//        }
         int width = set.getErrorRect().width;
         int height = set.getErrorRect().height;
         System.out.println((int) pose.getX() + "," + (int) pose.getY()
@@ -109,6 +106,8 @@ public class TravelingRobot {
         System.out.println("--- At ---\t\t--- Error ---\t\t--- Weight ---");
         while (true) {
             Pose currentPose = mcl.getPose();
+            if (colorSensor.getColorNumber() == 9)
+                        return currentPose;
             if (withinErrorThreshold(currentPose)) {
                 System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.getY() + ")");
                 return currentPose;
@@ -128,8 +127,10 @@ public class TravelingRobot {
                 Collection<WayPoint> route = pathFinder.findRoute(current, goal);
                 for (WayPoint p : route)
                     System.out.println("GO TO: (" + p.x + ", " + p.y + ")");
-                Button.waitForPress();
+               // Button.waitForPress();
                 for (WayPoint p : route) {
+                    if (colorSensor.getColorNumber() == 9)
+                        break;
                     poseController.goTo(p);
                 }
             }
@@ -146,7 +147,7 @@ public class TravelingRobot {
         pilot.rotate(angle);
 
         float distance = (float) Math.random() * MAX_DISTANCE;
-        if (sensor.getDistance() > distance + 12)
+        if (sensor.getDistance() > distance + 12 && us.getRange() > distance + 12)
             pilot.travel(distance, true);
 
         while (pilot.isMoving())
@@ -222,7 +223,7 @@ public class TravelingRobot {
         LineMap map = new LineMap(lines, new Rectangle((int) width, (int) height));
         ArrayList<Point> colors = new ArrayList<Point>();
         colors.add(new Point(60, 30));
-        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(50, 211, 180));
+        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(467, 176, 180));
 
 //        robot.localize();
 //        robot.move();

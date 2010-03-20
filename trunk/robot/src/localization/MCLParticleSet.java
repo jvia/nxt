@@ -24,7 +24,7 @@ public class MCLParticleSet {
     // Static variables
     public static int maxIterations = 1000;
     // Instance variables
-    private float twoSigmaSquared = 250f;
+    private float twoSigmaSquared = 800f;//250f;
     private float distanceNoiseFactor = 0.02f;
     private float angleNoiseFactor = 0.02f;
     private int numParticles;
@@ -36,7 +36,7 @@ public class MCLParticleSet {
     private int border = 10;	// The minimum distance from the edge of the map
     // to generate a particle.
     private Rectangle boundingRect;
-    private boolean debug = false;
+    private boolean debug = true;
     // TODO ADDED
     private static final float MAX_READING = 90;
 
