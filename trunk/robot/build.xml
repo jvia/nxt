@@ -11,7 +11,12 @@
   <property name="program" value="Example"/>
   <property name="main.class" value="org.lejos.example.HelloWorld"/>
   <property name="binary" value="${build}/${program}.nxj" />
-	
+
+  <!-- If you use and additional jars or projects, reference them here -->
+    <path id="dependencies.class.path">
+        <pathelement location="C:\Users\Jeremiah\Documents\My Dropbox\Code\server\dist\server.jar"/>
+  </path>
+
   <!-- deletes generated files -->
   <target name="clean" description="clean up all generated files">
   	<delete dir="build"/>
@@ -25,6 +30,7 @@
       <bootclasspath>
         <pathelement location="${nxj.classes.home}/lib/classes.jar"/>
       </bootclasspath>
+      <classpath refid="dependencies.class.path"/>
     </javac>
   </target>
 
@@ -35,7 +41,7 @@
       <arg value="--bootclasspath"/>
       <arg path="${nxj.classes.jar}" />
       <arg value="--classpath"/>
-      <arg path="${build}" />
+      <arg path="${build};C:\Users\Jeremiah\Documents\My Dropbox\Code\server\dist\server.jar" />
       <arg value="--writeorder" />
       <arg value="LE" />
       <arg value="${main.class}"/>

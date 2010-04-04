@@ -6,11 +6,11 @@ import util.Collections;
 /**
  * Searches for a route in the grid that will take it to a specified
  * goal point
- *
  * Exercise 04
  * 24 February 2010
- * J. Via, M. Staniaszek
+ * J. (Xiao Long) Via, M. Staniaszek
  */
+
 public class GridSearch {
 
     ArrayList<GridPoint> blocked;

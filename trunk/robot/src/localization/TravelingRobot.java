@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package localization;
 
 import java.awt.Rectangle;
@@ -22,6 +18,7 @@ import lejos.robotics.Pose;
 import lejos.robotics.RangeReadings;
 import lejos.robotics.mapping.RangeMap;
 import lejos.robotics.proposal.ArcPoseController;
+import lejos.robotics.proposal.DeadReckonerPoseProvider;
 import lejos.robotics.proposal.DestinationUnreachableException;
 import lejos.robotics.proposal.DifferentialPilot;
 import lejos.robotics.proposal.WayPoint;
@@ -32,133 +29,6 @@ import util.RobotConstants;
  * @author Jeremiah Via
  */
 public class TravelingRobot {
-    // static varibles
-
-    private static float MAX_READING = 150;
-    private static final int ERROR_THRESHOLD = 10;
-    // the world
-    private RangeMap map;
-    private ArrayList<Point> colorsToVisit;
-    // our sense of it
-    private OpticalDistanceSensor sensor = new OpticalDistanceSensor(SensorPort.S1);
-    private static ColorSensor colorSensor = new ColorSensor(SensorPort.S3);
-    private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
-    /* our way to move within it */
-    private DifferentialPilot pilot;
-    private MCLParticleSet set;
-    private MCLPoseProvider mcl;
-    private ArcPoseController poseController;
-    private RangeReadings readings;
-    private Pose start;
-    private float MAX_DISTANCE = 20f;
-    Scanner scanner;
-
-    public TravelingRobot(RangeMap map/*, UltrasonicSensor sensor*/,
-                          ArrayList<Point> colorsToVisit, Pose start) {
-        this.map = map;
-        this.colorsToVisit = colorsToVisit;
-        this.start = start;
-
-
-        pilot = new DifferentialPilot(RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
-                                      RobotConstants.leftMotor, RobotConstants.rightMotor);
-        scanner = new Scanner(Motor.C, sensor);
-
-        mcl = new MCLPoseProvider(start, pilot, scanner, map, 100, 0);
-        set = mcl.getParticles();
-        poseController = new ArcPoseController(pilot, mcl);
-    }
-
-    public void visitPoints() throws DestinationUnreachableException {
-        MapPathFinder pathFinder = new MapPathFinder(map, readings);
-
-        for (Point color : colorsToVisit) {
-            Pose begin = localize();
-
-            Collection<WayPoint> route = pathFinder.findRoute(begin, color);
-
-            for (WayPoint nextStop : route) {
-                System.out.println("Heading to (" + nextStop.x + ", " + nextStop.y + ")");
-                poseController.goTo(nextStop);
-            }
-
-            if (mcl.getPose().getX() == color.x && mcl.getPose().getY() == color.y)
-                Sound.twoBeeps();
-        }
-    }
-
-    /**
-     * Error threshold calculator. If all the particles are within this
-     * threshold we can consider ourselves at a position.
-     * @param pose
-     * @return
-     */
-    private boolean withinErrorThreshold(Pose pose) {
-        int width = set.getErrorRect().width;
-        int height = set.getErrorRect().height;
-        System.out.println((int) pose.getX() + "," + (int) pose.getY()
-                           + "\t\t\t" + width + "," + height + " \t\t\t" + set.getMaxWeight());
-
-        return width < ERROR_THRESHOLD && height < ERROR_THRESHOLD;
-    }
-
-    public Pose localize() {
-        System.out.println("--- At ---\t\t--- Error ---\t\t--- Weight ---");
-        while (true) {
-            Pose currentPose = mcl.getPose();
-            if (colorSensor.getColorNumber() == 9)
-                        return currentPose;
-            if (withinErrorThreshold(currentPose)) {
-                System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.getY() + ")");
-                return currentPose;
-            }
-            else
-                move();
-        }
-    }
-
-    public void goTo(Point g) {
-
-        Pose goal = new Pose(g.x, g.y, 0);
-        while (colorSensor.getColorNumber() != 9) {
-            try {
-                Pose current = localize();
-                navigation.MapPathFinder pathFinder = new navigation.MapPathFinder(map, scanner.getRangeValues());
-                Collection<WayPoint> route = pathFinder.findRoute(current, goal);
-                for (WayPoint p : route)
-                    System.out.println("GO TO: (" + p.x + ", " + p.y + ")");
-               // Button.waitForPress();
-                for (WayPoint p : route) {
-                    if (colorSensor.getColorNumber() == 9)
-                        break;
-                    poseController.goTo(p);
-                }
-            }
-            catch (DestinationUnreachableException ex) {
-                continue;
-            }
-        }
-    }
-
-    private void move() {
-        float angle = (float) (Math.random() * 360);
-        while (angle > 180)
-            angle -= 360;
-        pilot.rotate(angle);
-
-        float distance = (float) Math.random() * MAX_DISTANCE;
-        if (sensor.getDistance() > distance + 12 && us.getRange() > distance + 12)
-            pilot.travel(distance, true);
-
-        while (pilot.isMoving())
-            if (sensor.getDistance() <= 30 || us.getRange() <= 30)
-                pilot.stop();
-    }
-
-    public ArrayList<Point> route(Point start, Point goal) {
-        throw new UnsupportedOperationException("Do this");
-
-    }
 
     public static void main(String[] args) throws DestinationUnreachableException {
         RConsole.openBluetooth(60000);
@@ -221,17 +91,129 @@ public class TravelingRobot {
         };
 
         LineMap map = new LineMap(lines, new Rectangle((int) width, (int) height));
-        ArrayList<Point> colors = new ArrayList<Point>();
-        colors.add(new Point(60, 30));
-        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(467, 176, 180));
-
-//        robot.localize();
-//        robot.move();
-//        Pose p = robot.localize();
-//        System.out.println("Final Pose: (" + p.getX() + ", " + p.getY() + ", " + p.getHeading() + ")");
+        ArrayList<ColorSquare> colors = new ArrayList<ColorSquare>();
+        TravelingRobot robot = new TravelingRobot(map, colors, new Pose(467, 176, 0));
 
         robot.goTo(new Point(236, 45));
 
         RConsole.close();
+    }
+    // static varibles
+    private static float MAX_READING = 150;
+    private static final int ERROR_THRESHOLD = 10;
+    // the world
+    private RangeMap map;
+    private ArrayList<ColorSquare> squares;
+    // our sense of it
+    private OpticalDistanceSensor sensor = new OpticalDistanceSensor(SensorPort.S1);
+    private static ColorSensor colorSensor = new ColorSensor(SensorPort.S3);
+    private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
+    /* our way to move within it */
+    private DifferentialPilot pilot;
+    private MCLParticleSet set;
+    private MCLPoseProvider mcl;
+    private ArcPoseController poseController;
+    private float MAX_DISTANCE = 20f;
+    Scanner scanner;
+
+    public TravelingRobot(RangeMap map, ArrayList<ColorSquare> squares, Pose start) {
+        this.map = map;
+        this.squares = squares;
+        pilot = new DifferentialPilot(RobotConstants.WHEEL_DIAMETER / 10, RobotConstants.TRACK_WIDTH / 10,
+                                      RobotConstants.leftMotor, RobotConstants.rightMotor);
+        scanner = new Scanner(Motor.C, sensor);
+        mcl = new MCLPoseProvider(start, pilot, scanner, map, 200, 10);
+        set = mcl.getParticles();
+        poseController = new ArcPoseController(pilot, mcl);
+    }
+
+    public void visitSquares() throws DestinationUnreachableException {
+    }
+
+    /**
+     * Error threshold calculator. If all the particles are within this
+     * threshold we can consider ourselves at a position.
+     * @param pose
+     * @return
+     */
+    private boolean withinErrorThreshold(Pose pose) {
+        int width = set.getErrorRect().width;
+        int height = set.getErrorRect().height;
+        System.out.println((int) pose.getX() + "," + (int) pose.getY()
+                           + "\t\t\t" + width + "," + height + " \t\t\t" + set.getMaxWeight());
+
+        return width < ERROR_THRESHOLD && height < ERROR_THRESHOLD;
+    }
+
+    public Pose localize() {
+        System.out.println("--- At ---\t\t--- Error ---\t\t--- Weight ---");
+        while (true) {
+            Pose currentPose = mcl.getPose();
+            if (colorSensor.getColorNumber() == 9)
+                return currentPose;
+            if (withinErrorThreshold(currentPose)) {
+                System.out.println("\nAt: (" + currentPose.getX() + ", " + currentPose.getY() + ")");
+                return currentPose;
+            }
+            else
+                move();
+        }
+    }
+
+    public void goTo(Point g) {
+
+        Pose goal = new Pose(g.x, g.y, 0);
+        while (squares.size() > 0) {
+            try {
+                Pose current = localize();
+                navigation.MapPathFinder pathFinder = new navigation.MapPathFinder(map, scanner.getRangeValues());
+                Collection<WayPoint> route = pathFinder.findRoute(poseController.getPoseProvider().getPose(), goal);
+                for (WayPoint p : route)
+                    System.out.println("GO TO: (" + p.x + ", " + p.y + ")");
+                // Button.waitForPress();
+                for (WayPoint p : route) {
+                    if (overColor()) {
+                        Sound.beep();
+                        break;
+                    }
+                    poseController.goTo(p);
+                }
+            }
+            catch (DestinationUnreachableException ex) {
+                continue;
+            }
+        }
+    }
+
+    private void move() {
+        float angle = (float) (Math.random() * 360);
+        while (angle > 180)
+            angle -= 360;
+        pilot.rotate(angle);
+
+        float distance = (float) Math.random() * MAX_DISTANCE;
+        if (sensor.getDistance() > distance + 12 && us.getRange() > distance + 12)
+            pilot.travel(distance, true);
+
+        while (pilot.isMoving())
+            if (sensor.getDistance() <= 30 || us.getRange() <= 30)
+                pilot.stop();
+    }
+
+    private boolean overColor() {
+        int colorNumber = colorSensor.getColorNumber();
+
+        for (int i = 0; i < squares.size(); i++) {
+            if (colorNumber == squares.get(i).getColorNumber()) {
+                squares.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<Point> route(Point start, Point goal) {
+        throw new UnsupportedOperationException("Do this");
+
     }
 }

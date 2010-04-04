@@ -39,13 +39,6 @@ public class Scanner implements RangeScanner {
         this.sensor = sensor;
     }
 
-    public Scanner(DifferentialPilot pilot, OpticalDistanceSensor sensor,
-                   int numReadings) {
-        this.pilot = pilot;
-        this.sensor = sensor;
-        readings = new RangeReadings(numReadings);
-    }
-
     /**
      * Scans every 30 degrees around it using the OpticalDistanceSensor and
      * returns those results as {@link RangeReadings}.
@@ -69,15 +62,6 @@ public class Scanner implements RangeScanner {
         distance = sensor.getDistance()/10;
         distance = (distance >= 80) ? -1 : distance;
         readings.setRange(2, -45, distance);
-
-
-
-//        for (int angle = -180 + (360 / readings.size()), i = 0; i < 6; angle += (360 / readings.size()), i++) {
-//            turret.rotateTo(angle);
-//            distance = sensor.getRange();
-//            distance = (distance >= 150) ? -1 : distance;
-//            readings.setRange(i, angle, distance);
-//        }
 
         turret.rotateTo(0);
 

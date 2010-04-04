@@ -24,7 +24,7 @@ public class MCLParticleSet {
     // Static variables
     public static int maxIterations = 1000;
     // Instance variables
-    private float twoSigmaSquared = 800f;//250f;
+    private float twoSigmaSquared = 250f;
     private float distanceNoiseFactor = 0.02f;
     private float angleNoiseFactor = 0.02f;
     private int numParticles;
@@ -65,22 +65,12 @@ public class MCLParticleSet {
         particles = new MCLParticle[numParticles];
         for (int i = 0; i < numParticles; i++) {
             particles[i] = new MCLParticle(start);
-//            if (i > numParticles - (numParticles/4))
-//                particles[i].applyMove(new Movement(Movement.MovementType.TRAVEL, 2,
-//                                      (float) (-180 + Math.random() * 360), false),
-//                                       distanceNoiseFactor, angleNoiseFactor);
+            if (i > numParticles / 2)
+                particles[i].applyMove(new Movement(Movement.MovementType.TRAVEL, 2,
+                                                    (float) (-180 + Math.random() * 360), false),
+                                       distanceNoiseFactor, angleNoiseFactor);
         }
-
-//        for (int i = numParticles-1; i > numParticles-10; i--)
-//            particles[i] = generateParticle();
         resetEstimate();
-//        estimatedX = start.getX();
-//        estimatedY = start.getY();
-//        estimatedAngle = start.getHeading();
-//        minX = start.getX() - 1;
-//        minY = start.getY() - 1;
-//        maxX = start.getX() + 1;
-//        maxY = start.getY() + 1;
     }
 
     /**
